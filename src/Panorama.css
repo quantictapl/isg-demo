@@ -1,0 +1,28 @@
+.scene {
+    position: relative;
+    height: 100vh;
+    width: 100vw;
+  }
+  
+  .logout {
+    z-index: 1;
+    position: absolute;
+    right: 5%;
+    top: 80%;
+    border: 0.2em solid white;
+    padding: 0.3em;
+    font-size: larger;
+    font-weight: 500;
+    color: rgb(224, 224, 224);
+    background: transparent;
+    border-radius: 40%;
+    opacity: 0.7;
+  }
+  
+  .logout:hover {
+    background-color: rgb(180, 180, 180);
+    color: black;
+    opacity: 1;
+  }
+
+
