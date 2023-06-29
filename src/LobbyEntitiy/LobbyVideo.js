@@ -13,46 +13,83 @@ import wifi from "../videos/wifi.mp4";
 import btn from "../videos/circle.mp4";
 import { useNavigate } from "react-router-dom";
 
-function LobbyVideos() {
+function LobbyVideos(playVideo,mute) {
     const navigate = useNavigate();
     const handleMerchantClick = (event) => {
         event.stopPropagation();
         navigate("/smartmerchant");
         console.log("merchant button clicked"); // Replace "/your-route" with the desired path
       };
+      useEffect(() => {
+        const videos = document.getElementsByClassName("displayVideo");
+        const tv=document.getElementById("tv");
+        const frontwall=document.getElementById("frontwall");
+        const wifi=document.getElementById("wifi");
+        const myVideo=document.getElementById("myvideo");
+        const btn=document.getElementById("btn");
+        // if(!mute){
+        //   tv.muted=false;
+        // }else{
+        //   tv.muted=true;
+        // }
+        tv.muted=true;
+        frontwall.muted=true;
+        wifi.muted=true;
+        myVideo.muted=true;
+        btn.muted=true;
+        
+        for (let i = 0; i < videos.length; i++) {
+               videos[i].play();
+        }
+      
+        // if (playVideo) {
+        //   for (let i = 0; i < videos.length; i++) {
+        //     videos[i].play();
+        //   }
+        // } else {
+        //   for (let i = 0; i < videos.length; i++) {
+        //     videos[i].pause();
+        //   }
+        // }
+      }, []);
+    
   return (
     <>
      <a-assets>
-          <video
+          <video className="displayVideo"
           // because when muted even when hard reloaded the videos are not playing dont be scared
-            id="myvideo" preload="auto" src={wallbrand} width="1920" height="1080" autoplay="true" loop="true" crossOrigin="anonymous" muted
+            id="myvideo" preload="auto" src={wallbrand} width="1920" height="1080" autoplay="true" loop="true" crossOrigin="anonymous" 
             playsInline=""
             webkit-playsinline=""
           ></video>
           <video
-            id="frontwall" preload="auto" src={frontwall} width="1920" height="1080" autoplay="true" loop="true" crossOrigin="anonymous" muted
+            className="displayVideo"
+            id="frontwall" preload="auto" src={frontwall} width="1920" height="1080" autoplay="true" loop="true" crossOrigin="anonymous" 
             playsInline=""
             webkit-playsinline=""
           ></video>
           <video
-            id="tv" preload="auto" src={tv} width="1920" height="1080" autoplay="true" loop="true" crossOrigin="anonymous" muted
+            className="displayVideo"
+            id="tv" preload="auto" src={tv} width="1920" height="1080" autoplay="true" loop="true" crossOrigin="anonymous" 
             playsInline=""
             webkit-playsinline=""
           ></video>
           <video
-            id="wifi" preload="auto" src={wifi} width="1920" height="1080" autoplay="true" loop="true" crossOrigin="anonymous" muted
+            className="displayVideo"
+            id="wifi" preload="auto" src={wifi} width="1920" height="1080" autoplay="true" loop="true" crossOrigin="anonymous" 
             playsInline=""
             webkit-playsinline=""
           ></video>
           <video
-            id="btn" preload="auto" src={btn} width="1920" height="1080" autoplay="true" loop="true" crossOrigin="anonymous" muted
+            className="displayVideo"
+            id="btn" preload="auto" src={btn} width="1920" height="1080" autoplay="true" loop="true" crossOrigin="anonymous" 
             playsInline=""
             webkit-playsinline=""
           ></video>
         </a-assets>
-        <a-entity
+        <a-entity 
         //checkout aframe material events
-          material="shader: flat; side: double; src: #myvideo"
+          material="shader: flat; side: double; src: #myvideo" 
           geometry="primitive: cylinder; radius: 9.2; height: 3.6815; open-ended: true; theta-start: 142.5; theta-length: 63;"
           position="-313 8 -128"
           rotation="0 -10 0"

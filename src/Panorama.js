@@ -19,11 +19,13 @@ import LobbyVideos from "./LobbyEntitiy/LobbyVideo";
 function Panorama({ src, birdSrc, globe, ellie }) {
   const cameraRef = useRef(null);
   const sceneRef = useRef(null);
-  const cameraContainerRef=useRef(null) 
+  const cameraContainerRef=useRef(null); 
+  const [mute,setMute]=useState(true);
   const [zoom, setZoom] = useState(1.5);
   const navigate = useNavigate();
-  const [isRotated,setIsRotated]=useState(false)
+  const [isRotated,setIsRotated]=useState(false);
   const defaultRotationRef = useRef(null);
+  const [playVideo,setPlayVideo]=useState(false)
   // let cameraRig; // Declare a global variable
 
   // useEffect(() => {
@@ -125,7 +127,7 @@ function Panorama({ src, birdSrc, globe, ellie }) {
     navigate("/smartmerchant");
     console.log("merchant button clicked"); // Replace "/your-route" with the desired path
   };
-
+  console.log(mute)
   useEffect(() => {
     //later try changing the useRef as seen in smartgate useEffect
     const cameraRig = document.getElementById('camerarig');
@@ -140,13 +142,16 @@ function Panorama({ src, birdSrc, globe, ellie }) {
     //   alert('mouseenter');
     // });
   });
- 
+  // const handlePlayAllVideoBtnClick=()=>{
+  //   setPlayVideo(true);
+  // }
   
   
 
   const handleCameraZoom = () => {
     
     setZoom(prevZoom => (prevZoom >= 1.5 ? 5 : 1.5));
+    setMute(!mute)
     // cameraRig.object3D.rotation.set(0, -157, 0);
     // setRotation(prevrotation => ({
     //   ...prevrotation,
@@ -158,6 +163,9 @@ function Panorama({ src, birdSrc, globe, ellie }) {
     
     
   };
+  const handleMuteChange=()=>{
+    setMute(!mute)
+   }
  
   const rotation1=" 0 10 0";
   const defaultRotation="0 -45 0";
@@ -165,6 +173,7 @@ function Panorama({ src, birdSrc, globe, ellie }) {
   return (
     <div className="scene-container">
       <HideVRButton />
+      {/* <button className="video-play-button" onClick={handlePlayAllVideoBtnClick}>Play all videos</button>  */}
       <Scene 
       // inspector="url: https://cdn.jsdelivr.net/gh/aframevr/aframe@d52af46565230a33c0fa23e045fb74e877df7dc9/dist/aframe-master.min.js"
         // cursor="rayOrigin: mouse"
@@ -231,7 +240,7 @@ function Panorama({ src, birdSrc, globe, ellie }) {
         ></a-entity>
         <SmartgateHover/>
         <PaymentGateHovered/> 
-        <LobbyVideos/>
+        <LobbyVideos playVideo={playVideo} mute={mute}/>
         
         <a-entity id="ambient" light="type: ambient; intensity:0.2;"></a-entity>
         <a-entity
