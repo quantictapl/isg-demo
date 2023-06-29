@@ -16,15 +16,17 @@ import "aframe-inspector";
 import SmartgateHover from "./LobbyEntitiy/smartgateHover";
 import PaymentGateHovered from "./LobbyEntitiy/paymentgateHovered";
 import LobbyVideos from "./LobbyEntitiy/LobbyVideo";
+
 function Panorama({ src, birdSrc, globe, ellie }) {
   const cameraRef = useRef(null);
   const sceneRef = useRef(null);
   const cameraContainerRef=useRef(null); 
-  const [mute,setMute]=useState(true);
+  const [isLoaded, setIsLoaded] = useState(false);
   const [zoom, setZoom] = useState(1.5);
   const navigate = useNavigate();
   const [isRotated,setIsRotated]=useState(false);
   const defaultRotationRef = useRef(null);
+  const [light,setLight]=useState(false);
   const [playVideo,setPlayVideo]=useState(false)
   // let cameraRig; // Declare a global variable
 
@@ -33,39 +35,7 @@ function Panorama({ src, birdSrc, globe, ellie }) {
   //   const defaultRotation = cameraRef.current.getComputedAttribute('rotation');
   //   defaultRotationRef.current = defaultRotation;
   // }, []);
-  // useEffect(() => {
-  //   const aframeScene = document.querySelector("a-scene");
-  //   if (aframeScene.hasLoaded) {
-  //     // If the scene has already loaded, initialize the inspector immediately
-  //     aframeScene.components["inspector"].open();
-  //   } else {
-  //     // If the scene is still loading, wait for the "loaded" event before initializing the inspector
-  //     aframeScene.addEventListener("loaded", () => {
-  //       aframeScene.components["inspector"].open();
-  //     });
-  //   }
-  // }, []);
-  // useEffect(() => {
-  //   const handleInspectorShortcut = (event) => {
-  //     if (event.ctrlKey && event.altKey && event.key === "i") {
-  //       const aframeScene = document.querySelector("a-scene");
-  //       if (aframeScene.components["inspector"].isOpen) {
-  //         aframeScene.components["inspector"].close();
-  //       } else {
-  //         aframeScene.components["inspector"].open();
-  //       }
-  //     }
-  //   };
-  
-  //   window.addEventListener("keydown", handleInspectorShortcut);
-  //   return () => {
-  //     window.removeEventListener("keydown", handleInspectorShortcut);
-  //   };
-  // }, []);
-  // useEffect(() => {
-  //   const aframeInspector = document.createElement('aframe-inspector');
-  //   document.body.appendChild(aframeInspector);
-  // }, []);
+
   
   const handleZoom = (event) => {
     const newZoom = zoom + event.deltaY * -0.008;
@@ -86,6 +56,9 @@ function Panorama({ src, birdSrc, globe, ellie }) {
     window.addEventListener("wheel", handleZoom);
     return () => window.removeEventListener("wheel", handleZoom);
   });
+  useEffect(()=>{
+    setLight(true)
+  },[light])
   useEffect(() => {
     const handleMouseMove = (event) => {
       const { clientX, clientY } = event;
@@ -127,7 +100,6 @@ function Panorama({ src, birdSrc, globe, ellie }) {
     navigate("/smartmerchant");
     console.log("merchant button clicked"); // Replace "/your-route" with the desired path
   };
-  console.log(mute)
   useEffect(() => {
     //later try changing the useRef as seen in smartgate useEffect
     const cameraRig = document.getElementById('camerarig');
@@ -151,7 +123,7 @@ function Panorama({ src, birdSrc, globe, ellie }) {
   const handleCameraZoom = () => {
     
     setZoom(prevZoom => (prevZoom >= 1.5 ? 5 : 1.5));
-    setMute(!mute)
+   
     // cameraRig.object3D.rotation.set(0, -157, 0);
     // setRotation(prevrotation => ({
     //   ...prevrotation,
@@ -163,10 +135,8 @@ function Panorama({ src, birdSrc, globe, ellie }) {
     
     
   };
-  const handleMuteChange=()=>{
-    setMute(!mute)
-   }
- 
+
+  console.log(light)
   const rotation1=" 0 10 0";
   const defaultRotation="0 -45 0";
   
@@ -238,11 +208,27 @@ function Panorama({ src, birdSrc, globe, ellie }) {
           event-set__mouseenter="_event: mouseenter; material.opacity: 0.8; textEntity.opacity:0.7; text.color:orange;"
           event-set__mouseleave="_event: mouseleave; material.opacity: 0.4; textEntity.opacity:0; text.color:red;"
         ></a-entity>
+        
         <SmartgateHover/>
         <PaymentGateHovered/> 
-        <LobbyVideos playVideo={playVideo} mute={mute}/>
-        
-        <a-entity id="ambient" light="type: ambient; intensity:0.2;"></a-entity>
+        <LobbyVideos playVideo={playVideo}/>
+        {light && (<>
+          <a-entity id="ambient" light="type: ambient; intensity:0.2;"></a-entity>
+             <a-entity
+               id="directional"
+               light="type: directional; castShadow:true; intensity:3;  position:0 20 0; color:#FFFFFF"
+             ></a-entity>
+             <a-entity id="spot1" light="type: spot; castShadow: true; target:#globe; intensity: 400; distance: 1000; color: white; decay: 1.01; penumbra: 0.63; shadowBias: 0.57" position="-57.4524 47.48264 -53.42823" rotation="-13.094950407714965 -155.69898899562068 50.07651129443395"></a-entity>
+             <a-entity id="spot2" light="type: spot; castShadow: true; target:#globe; intensity: 800; distance: 2000; color: white; penumbra: 1" position="75.18762 14.52602 -44.88032" rotation="10.988184595018929 136.346766507282 163.62184938668972"></a-entity>
+             <a-entity id="spot3" light="type: spot; castShadow: true; target:#globe; intensity: 400; distance: 400; color: white; decay: 1.01; penumbra: 0.63; shadowBias: 0.57" position="-57.44097 32.16745 84.66318" rotation="-5.005359298262872 -46.50240056840788 41.34119674986942"></a-entity>
+             <a-light light="type: ambient"></a-light></>
+             
+        )}
+        <a-assets>
+          <a-asset-item id="bird" response-type="arraybuffer" src={birdSrc} />
+          <a-asset-item id="globe" response-type="arraybuffer" src={globe} />
+        </a-assets>
+        {/* <a-entity id="ambient" light="type: ambient; intensity:0.2;"></a-entity>
         <a-entity
           id="directional"
           light="type: directional; castShadow:true; intensity:3;  position:0 20 0; color:#FFFFFF"
@@ -259,7 +245,7 @@ function Panorama({ src, birdSrc, globe, ellie }) {
           position=" 20 10 20" rotation="0 0 0"
           // raycaster="objects: [gui-interactable]; far: 100"
         ></a-entity>
-        <a-light light="type: ambient"></a-light>
+        <a-light light="type: ambient"></a-light> */}
 
         <Entity primitive="a-sky" src={src} rotation="0 -130 0" />
         <a-sky color="#ECECEC" scale="3 3 3"></a-sky>
@@ -282,18 +268,15 @@ function Panorama({ src, birdSrc, globe, ellie }) {
           Logout
         </button>
 
-        <a-assets>
-          <a-asset-item id="bird" response-type="arraybuffer" src={birdSrc} />
-          <a-asset-item id="globe" response-type="arraybuffer" src={globe} />
-        </a-assets>
+        
         <a-entity
-          className="girl" gltf-model={ellie} scale="8 8 8" position="0 -40.2 380" rotation="0 180 0"
+          className="girl" gltf-model={ellie} scale="1.2 1.2 1.2" position="-0.274 -6.524 64.159" rotation="0 180 0"
           animation-mixer="clip:Armature|mixamo.com|Layer0; loop:repeat;  repetitions: Infinity;"
           // shadow="cast:true;"
         ></a-entity>
         <a-entity
           id="globe"
-          gltf-model={globe} scale="1000 1000 1000" position="0 -40 380" rotation="0 0 0"
+          gltf-model={globe} scale="200 200 200" position="-0.247 -7.117 64.132" rotation="0 -12.215 0"
           animation-mixer="clip:Animation;loop:repeat;repetitions:Infinity;"
           // shadow="cast:true;"
         ></a-entity>
