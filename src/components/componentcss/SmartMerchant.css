@@ -1,6 +1,20 @@
-/* .scene-container{
-    display:none;
-} */
+.scene-container{
+    height:100%;
+    position:relative;
+    top:0%;
+    overflow: hidden; 
+}
 .store-entity{
     display: hidden;
+}
+.demo-play-btn{
+    height:4rem;
+    width:4rem;
+    background-color: brown;
+}
+.benifits-audio{
+    visibility: hidden;
+    height:1px;
+    width:1px;
+    position:absolute;
 }

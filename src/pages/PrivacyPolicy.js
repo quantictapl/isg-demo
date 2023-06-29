@@ -1,6 +1,8 @@
 import React from "react";
 import "./PrivacyPolicy.css";
+import { useNavigate } from "react-router-dom";
 function PrivacyPolicy() {
+  const navigate=useNavigate();
   return (
     <div className="grad-bg">
       <div className="signup-bg">
@@ -205,8 +207,8 @@ function PrivacyPolicy() {
                 </div>
               </div>
               <div className="privacy-btn-container">
-                <button className="privacy-btn accept">Accept</button>
-                <button className="privacy-btn decline">Decline</button>
+                <button className="privacy-btn accept" onClick={()=>{navigate("/signup")}}>Accept</button>
+                {/* <button className="privacy-btn decline" onClick={()=>{navigate("/signup")}}>Decline</button> */}
               </div>
             </div>
           </div>

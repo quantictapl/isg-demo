@@ -24,5 +24,8 @@
     color: black;
     opacity: 1;
   }
+  iframe{
+    display: none;
+  }
 
 

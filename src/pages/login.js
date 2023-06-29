@@ -55,6 +55,7 @@ const loginAPIUrl ="https://vyw54xaie6.execute-api.ap-south-1.amazonaws.com/prod
 function Login() {
   const [username,setUsername]=useState('');
   const [password,setPassword]=useState('');
+  const [isTermsChecked, setIsTermsChecked] = useState(false);
   const [errorMessage,setErrorMessage]=useState(null);
   const navigate = useNavigate();
   const [showSignup, setShowSignup] = useState(false);
@@ -66,10 +67,17 @@ function Login() {
   const handleAnimate = () => {
     setShowSignup(true);
   };
+  const handleTermsChange = (event) => {
+    setIsTermsChecked(event.target.checked);
+  };
   const submitHandler=(event)=>{
     event.preventDefault();
     if(username.trim()==='' || password.trim()===''){
       setErrorMessage("Both username and password are required")
+      return;
+    }
+    if (!isTermsChecked) {
+      alert("Please accept the terms and conditions");
       return;
     }
     setErrorMessage(null)
@@ -143,7 +151,7 @@ function Login() {
                 <input type="checkbox" />
                 <label className="term">Remember me</label>
 
-                <input className="terms-input" type="checkbox" />
+                <input className="terms-input" type="checkbox" checked={isTermsChecked} onChange={handleTermsChange} />
                 <label className="terms">
                   By checking this box, I affirm that I have read the privacy
                   policy, agree to sharing my data, having it stored and

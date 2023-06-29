@@ -66,6 +66,8 @@ function Signup() {
   const [message, setMessage] = useState(null);
   const [gender, setGender] = useState("");
   const [industry, setIndustry] = useState("");
+  const [isCaptchaValid, setIsCaptchaValid] = useState(false);
+  const [isTermsChecked, setIsTermsChecked] = useState(false);
   const navigate=useNavigate();
   const handleGenderChange = (selectedOption) => {
     setGender(selectedOption);
@@ -75,11 +77,24 @@ function Signup() {
     setIndustry(selectedOption);
     
   };
-
+  const handleCaptchaValidChange = (valid) => {
+    setIsCaptchaValid(valid);
+  };
+  const handleTermsChange = (event) => {
+    setIsTermsChecked(event.target.checked);
+  };
   const submitHandler = (event) => {
     event.preventDefault();
     if (email.trim() === "" || name.trim() === "" || password.trim() === "") {
       setMessage("All fields are required");
+      return;
+    }
+    if (!isCaptchaValid) {
+      setMessage("Please enter the correct CAPTCHA");
+      return;
+    }
+    if (!isTermsChecked) {
+      setMessage("Please accept the terms and conditions");
       return;
     }
     setMessage(null);
@@ -190,9 +205,9 @@ function Signup() {
                 value={phone}
                 onChange={(event) => setPhone(event.target.value)}
               />
-              <Captcha />
+              <Captcha onCaptchaValidChange={handleCaptchaValidChange} />
               <div className="check-container-signup">
-                <input type="checkbox" />
+              <input type="checkbox" checked={isTermsChecked} onChange={handleTermsChange} />
                 <label className="terms">
                   By checking this box, I affirm that I have read the <a href="/privacypolicy">Privacy Policy</a>
                   , agree to sharing my data, having it stored and
@@ -205,7 +220,7 @@ function Signup() {
                   navigate("/login")
                 }}>Login</button>
               </div>
-             { message &&  <p className="message" id="message">{message}Registration Successful</p>}
+             { message &&  <p className="message" id="message">{message}</p>}
             </div>
             
           </motion.div>
