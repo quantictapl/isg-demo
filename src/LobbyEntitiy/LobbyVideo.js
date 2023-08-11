@@ -12,9 +12,15 @@ import tv from "../videos/AboutUs.mp4";
 import wifi from "../videos/wifi.mp4";
 import btn from "../videos/circle.mp4";
 import { useNavigate } from "react-router-dom";
+import muteBtn from "../images/mute.png";
+import volumeBtn from "../images/volume.png"
+import isgloading from "../videos/isgloading.webm"
 
-function LobbyVideos(playVideo,mute) {
+function LobbyVideos(playVideo) {
     const navigate = useNavigate();
+    const [mute,setMute]=useState(true)
+    // const wallbrand="https://isg-assets.s3.ap-south-1.amazonaws.com/videos/wallbrand.mp4";
+    // const tv="https://isg-assets.s3.ap-south-1.amazonaws.com/videos/AboutUs.mp4";
     const handleMerchantClick = (event) => {
         event.stopPropagation();
         navigate("/smartmerchant");
@@ -27,12 +33,11 @@ function LobbyVideos(playVideo,mute) {
         const wifi=document.getElementById("wifi");
         const myVideo=document.getElementById("myvideo");
         const btn=document.getElementById("btn");
-        // if(!mute){
-        //   tv.muted=false;
-        // }else{
-        //   tv.muted=true;
-        // }
-        tv.muted=true;
+        if(!mute){
+          tv.muted=false;
+        }else{
+          tv.muted=true;
+        }
         frontwall.muted=true;
         wifi.muted=true;
         myVideo.muted=true;
@@ -51,8 +56,12 @@ function LobbyVideos(playVideo,mute) {
         //     videos[i].pause();
         //   }
         // }
-      }, []);
-    
+      }, [mute]);
+      const handleVolumeChange=()=>{
+        setMute(!mute)
+      }
+      const volumeBtnSrc = mute ? "#mute-btn" : "#volume-btn";
+    console.log(mute)
   return (
     <>
      <a-assets>
@@ -86,6 +95,8 @@ function LobbyVideos(playVideo,mute) {
             playsInline=""
             webkit-playsinline=""
           ></video>
+          <img id="mute-btn" src={muteBtn} alt=""/>
+          <img id="volume-btn" src={volumeBtn} alt=""/>
         </a-assets>
         <a-entity 
         //checkout aframe material events
@@ -132,6 +143,19 @@ function LobbyVideos(playVideo,mute) {
           }}
           raycaster="objects: [gui-interactable]"
         ></a-entity>
+        {/* <a-entity
+        //tv volume
+          id="volume-btn" 
+          material={`shader: flat; color:white; side: double; transparent: true; opacity: 0.5; src:${volumeBtnSrc};`}// this also causes inspector to dissapear as it is an image
+          geometry="primitive: circle; radius: 0.18; theta-length: 360"
+          position="2.7 -0.707 10"
+          rotation="0 215 0"
+          scale="1 1 1"
+          // text="width: 2; value:Play; color:red; align:center;"}
+          onClick={handleVolumeChange}
+          event-set__mouseenter="_event: mouseenter; material.opacity: 0.8; textEntity.opacity:0.7; text.color:orange;"
+          event-set__mouseleave="_event: mouseleave; material.opacity: 0.4; textEntity.opacity:0; text.color:red;"
+        ></a-entity> */}
         {/* <a-plane
           color="grey"
           scale="100000 100000 1000000"

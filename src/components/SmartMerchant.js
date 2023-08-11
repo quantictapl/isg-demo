@@ -18,7 +18,7 @@ import penpaper from "../SmartMerchantAssets/penpaper.glb"
 import sandclock from "../SmartMerchantAssets/sandclock.glb"
 import merchantTv from "../SmartMerchantAssets/videos/MerchantTv.mp4"
 import benifitsAudio from "../SmartMerchantAssets/videos/benifitsAudio.mp4"
-import benifits from "../SmartMerchantAssets/videos/benifits.webm"
+import benifits from "../SmartMerchantAssets/videos/benifits1.webm"
 import demo from "../SmartMerchantAssets/videos/demoSpeech2.webm"
 import SubsLogic, { controlAnimation } from "./SmartMerchantComps/SubsLogic";
 import videoContainer from "../SmartMerchantAssets/videocontainer.glb"
@@ -40,22 +40,33 @@ function SmartMerchant({ store }) {
   const [skipState,setSkipState]=useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [videoVisible, setVideoVisible] = useState(false);
+  const [tvVideoVisible, settvVideoVisible] = useState(false);
   const [cameraRotationEnded,setCameraRotationEnded]=useState(false);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const audioRef = useRef(null);
   const benifitsRef = useRef(null);
   const [audioPlaying, setAudioPlaying] = useState(false);
   const [videoEnded, setVideoEnded] = useState(false);
+  const [isTVVideoEnded, setIsTVVideoEnded] = useState(false);
+  const [benfitsEnded,setBenfitsEnded]=useState(false);
   const handleVideoEnd = () => {
     setVideoEnded(true);
+     if (videoRef.current && videoRef.current.currentTime >=94) {
+      // If the current video source is the second one (benifits video), navigate to the desired route
+      navigate("/smartmerchant/appdemo");
+    }
+    console.log(videoRef.current.src)
   };
   useEffect(() => {
     if (videoEnded) {
-      setVideoVisible(false);
+      settvVideoVisible(false);
     }
   }, [videoEnded]);
-  
+ 
+
+  const handleTVVideoPlay = () => {
+    setIsTVVideoEnded(false);
+  };
   
   // useEffect(() => {
   //   if (videoRef.current) {
@@ -65,7 +76,7 @@ function SmartMerchant({ store }) {
   const handlePlayPauseClick = () => {
     setIsPlaying(prevState => {
       if (!prevState) {
-        setVideoVisible(true); // Set videoVisible to true on first play button click
+        settvVideoVisible(true); // Set tvVideoVisible to true on first play button click
       }
       return !prevState;
     });
@@ -73,6 +84,13 @@ function SmartMerchant({ store }) {
 
     setAudioPlaying(!audioPlaying);
   };
+  const handleTvVideoShouldPlay=()=>{
+    setIsPlaying(true);
+    settvVideoVisible(true);
+    setIsTVVideoEnded(false);
+    setSkipState(false)
+    // setVideoEnded(false);
+  }
   const handleSkipClick=()=>{
     setSkipState(true);
     setPlayState(false);
@@ -102,87 +120,129 @@ function SmartMerchant({ store }) {
     const audioElement = audioRef.current;
     const esy = document.getElementById('esy');
     var video = document.getElementById("tvvideo");
+    const videoSrc=video.getAttribute("src")
+    console.log(videoSrc)
     function startAnimation() {
-      esy.setAttribute('animation-mixer', 'clip:; loop: repeat; repetitions: Infinity;');
+      if(videoSrc.includes("MerchantTv")){
+        esy.removeAttribute('animation-mixer');
+      }
+      else{
+        esy.setAttribute('animation-mixer', 'clip:; loop: repeat; repetitions: Infinity;');
+      }
+  
     }
     controlAnimation(esy)
     // Function to stop the animation
+    if(!video.ended){
+      setIsTVVideoEnded(false)
+    }
+
+     else if(video.src===videoSources[1] && video.ended){
+      // video.removeAttribute("src") // responsible for removing video src after benifits video ends
+      navigate("/smartmerchant/appdemo");
+      // alert("video ended")
+       setIsTVVideoEnded(true);
+      // console.log("src:benifits:videoEnded");
+      // setSkipState(true)
+      
+    }
+    else {
+      setIsTVVideoEnded(true)
+    }
     function stopAnimation() {
       esy.removeAttribute('animation-mixer');
+      if(video.src.includes("benifts") && video.ended){
+        navigate("/smartmerchant/appdemo")
+       }
+       console.log(isTVVideoEnded)
     }
+    // function benfitsEnded(){
+    //    if(video.src.includes("benifts") && isTVVideoEnded){
+    //     navigate("/smartmerchant/appdemo")
+    //    }
+    // }
     video.addEventListener('play', startAnimation);
     video.addEventListener('pause', stopAnimation);
     video.addEventListener('ended', stopAnimation);
+    // video.addEventListener('ended', benfitsEnded);
 
-    if ( video.src.includes("benifits") && isPlaying && !videoEnded) {
+
+    if ( video.src.includes("benifits") && isPlaying && video.ended===false) {
       audioElement.play();
-      console.log(true)
+      
+      console.log("audioplayed true")
+      console.log("for audio check","isPlaying",isPlaying,"!videoEnded",!videoEnded)
     } else{
       audioElement.pause();
+      audioElement.currentTime=video.currentTime;
+      console.log("audioplayed false")
+      console.log("for audio check","isPlaying",isPlaying,"!videoEnded",!videoEnded) 
     }
 
     return () => {
       audioElement.pause();
       
     };
-  }, [videoVisible,isPlaying,isPaused]);
-  
-  const [entityVisibility, setEntityVisibility] = useState({
-    gpay: {
-      isVisible: true,
-      gltfModel: gpay,
-      scale:"0.5 0.5 0.5",
-      position:"1.8 0 -2",
-      rotation:"1.538 -48.645 1.561",
-      animation: "Animation",
-      interval:"15000"
-    },
-    penpaper: {
-      isVisible: true,
-      gltfModel: penpaper,
-      scale:"1 1 1",
-      position:"1.8 0 -2",
-      rotation:"10.325 -94.289 -10.958",
-      animation: "Animation",
-      interval:"3000"
-    },
-    sandclock: {
-      isVisible: true,
-      gltfModel: sandclock,
-      scale:"1 1 1",
-      position:"1.8 0 -2",
-      rotation:"10.325 -34.608 -10.958.",
-      animation: "Animation",
-      interval:"3000"
-    },
-    store: {
-      isVisible: true,
-      gltfModel: store,
-      scale:"0.5 0.5 0.5",
-      position:"1.8 0 -2",
-      rotation:"40 -30 30",
-      animation: "Animation",
-      interval:"8000"
-    },
-    cards: {
-      isVisible: true,
-      gltfModel: cards,
-      position: "1.8 0 -2",
-      rotation: "34.690 2.558 24.020",
-      scale: "0.3 0.3 0.3",
-      animation: "Animation",
-      interval:"10000"
-    },
-    stat: {
-      isVisible: true,
-      gltfModel: stat,
-      position: "1.8 0 -2",
-      rotation: "10.325 -94.289 -10.958",
-      scale: "1 1 1",
-      animation: "Animation",
-      interval:"4000"
-    },
-  });
+  }, [tvVideoVisible, isPlaying, isPaused, videoEnded, navigate]);
+  const handleTVVideoEnd = () => {
+    setIsTVVideoEnded(true);
+  };
+  // const [entityVisibility, setEntityVisibility] = useState({
+  //   gpay: {
+  //     isVisible: true,
+  //     gltfModel: gpay,
+  //     scale:"0.5 0.5 0.5",
+  //     position:"1.8 0 -2",
+  //     rotation:"1.538 -48.645 1.561",
+  //     animation: "Animation",
+  //     interval:"15000"
+  //   },
+  //   penpaper: {
+  //     isVisible: true,
+  //     gltfModel: penpaper,
+  //     scale:"1 1 1",
+  //     position:"1.8 0 -2",
+  //     rotation:"10.325 -94.289 -10.958",
+  //     animation: "Animation",
+  //     interval:"3000"
+  //   },
+  //   sandclock: {
+  //     isVisible: true,
+  //     gltfModel: sandclock,
+  //     scale:"1 1 1",
+  //     position:"1.8 0 -2",
+  //     rotation:"10.325 -34.608 -10.958.",
+  //     animation: "Animation",
+  //     interval:"3000"
+  //   },
+  //   store: {
+  //     isVisible: true,
+  //     gltfModel: store,
+  //     scale:"0.5 0.5 0.5",
+  //     position:"1.8 0 -2",
+  //     rotation:"40 -30 30",
+  //     animation: "Animation",
+  //     interval:"8000"
+  //   },
+  //   cards: {
+  //     isVisible: true,
+  //     gltfModel: cards,
+  //     position: "1.8 0 -2",
+  //     rotation: "34.690 2.558 24.020",
+  //     scale: "0.3 0.3 0.3",
+  //     animation: "Animation",
+  //     interval:"10000"
+  //   },
+  //   stat: {
+  //     isVisible: true,
+  //     gltfModel: stat,
+  //     position: "1.8 0 -2",
+  //     rotation: "10.325 -94.289 -10.958",
+  //     scale: "1 1 1",
+  //     animation: "Animation",
+  //     interval:"4000"
+  //   },
+  // });
   // const [currentEntityIndex, setCurrentEntityIndex] = useState(0);
   // const entityNames = Object.keys(entityVisibility);
 
@@ -197,11 +257,11 @@ function SmartMerchant({ store }) {
     resetUserSession();
     navigate("/login");
   };
-
   useEffect(() => {
     window.addEventListener("wheel", handleZoom);
     return () => window.removeEventListener("wheel", handleZoom);
   });
+  
   useEffect(() => {
     const rotationSpeed = 0.0001; // Adjust the rotation speed as needed
     const rotationDuration = 6000; // Adjust the rotation duration (in milliseconds) as needed
@@ -291,7 +351,7 @@ function SmartMerchant({ store }) {
     navigate("/panorama");
     console.log("panorama button clicked"); // Replace "/your-route" with the desired path
   };
-  const handleNextVideo = (nextVideoIndex) => {
+  const handleNextVideo = (nextVideoIndex) => {    //tvvideo changes but subsvideo not changing might have to use the code of skipclick as wellin a evenListner for video
     // Update the video source based on the next video index
     const videoSource = videoSources[nextVideoIndex];
     const tvvideo = document.getElementById("tvvideo");
@@ -302,8 +362,10 @@ function SmartMerchant({ store }) {
     <div className="scene-container">
       {/* <button className="demo-play-btn" onClick={handlePlayBtnClick}>Play</button> */}
       
-      <SubsLogic  isPlaying={isPlaying} onPlayPauseClick={handlePlayPauseClick}
-        onSkipClick={handleSkipClick} onNextVideoClick={handleNextVideo} videoEnded={videoEnded} cameraRotationEnded={cameraRotationEnded}
+      <SubsLogic  isPlaying={isPlaying} tvVideoVisible={tvVideoVisible} onPlayPauseClick={handlePlayPauseClick}
+        onSkipClick={handleSkipClick} onNextVideoClick={handleNextVideo} videoEnded={videoEnded} cameraRotationEnded={cameraRotationEnded}  onTVVideoEnd={handleTVVideoEnd}
+        onTVVideoPlay={handleTVVideoPlay} onTVvideoShouldPlay={handleTvVideoShouldPlay}
+        isTVVideoEnded={isTVVideoEnded}
          />
          <video ref={audioRef} className="benifits-audio" src={benifitsAudio}/>
       
@@ -332,6 +394,7 @@ function SmartMerchant({ store }) {
           near="0.05"
           far="10000"
           camera="active:true"
+          look-controls="reverseMouseDrag:true"
         >
           <a-entity
             cursor="fuse: false;"
@@ -366,7 +429,7 @@ function SmartMerchant({ store }) {
           {/* <audio id="isyintro" src={isyintro} preload="auto"></audio> */}
           <img id="smartm" src={smartmerchant} alt=""/>
         </a-assets>
-        {!skipState && videoVisible && (
+        {!skipState && tvVideoVisible && (
     // <a-entity
     //   material="shader: flat; side: double;  opacity: 1; transparent: true;"
     //   geometry="primitive:plane; width: 4; height: 2.5;"
@@ -398,10 +461,10 @@ function SmartMerchant({ store }) {
           id="directional"
           light="type: directional; castShadow:true; intensity:1;  position:0 20 0; color:#FFFFFF"
         ></a-entity>
-        <a-entity id="spot1" light="type: spot; castShadow: true; intensity: 2.5; distance: 15; color: white; angle: 60.16" position="6.26958 3.91449 64.86643" rotation="49.99973494988642 -156.67244428954794 20.000237754631645"></a-entity>
-        <a-entity light="color: #ffffff; decay: 0; distance: 15.8; intensity: 4; type: spot" id="spot-light" position="-2.52809 0.72938 2"></a-entity>
-        <a-entity id="spot2" light="type: spot; castShadow: true; intensity: 3.8; decay: 0; distance: 15; color: white; angle: 60.16" position="-3.47559 2.02332 -3.3246"></a-entity>
-        <a-entity id="spot3" light="type: spot; castShadow: true; intensity: 3.4; decay: 0; distance: 15; color: white; angle: 60.16" position="3.47559 2.02332 -6.3246"></a-entity>
+        <a-entity id="spot1" light="type: spot; castShadow: true; intensity: 0.25; distance: 15; color: white; angle: 60.16" position="6.26958 3.91449 64.86643" rotation="49.99973494988642 -156.67244428954794 20.000237754631645"></a-entity>
+        <a-entity light="color: #ffffff; decay: 0; distance: 15.8; intensity: 0.4; type: spot" id="spot-light" position="-2.52809 0.72938 2"></a-entity>
+        <a-entity id="spot2" light="type: spot; castShadow: true; intensity: 0.38; decay: 0; distance: 15; color: white; angle: 60.16" position="-3.47559 2.02332 -3.3246"></a-entity>
+        <a-entity id="spot3" light="type: spot; castShadow: true; intensity: 0.34; decay: 0; distance: 15; color: white; angle: 60.16" position="3.47559 2.02332 -6.3246"></a-entity>
        {/* <a-entity
           gltf-model={optimus}
           position="0.3 -0.25 -1"
@@ -491,7 +554,7 @@ export default SmartMerchant;
 //   const [skipState,setSkipState]=useState(false);
 //   const [isPaused, setIsPaused] = useState(false);
 //   const [isPlaying, setIsPlaying] = useState(false);
-//   const [videoVisible, setVideoVisible] = useState(false);
+//   const [tvVideoVisible, settvVideoVisible] = useState(false);
 
   
 //   // useEffect(() => {
@@ -502,7 +565,7 @@ export default SmartMerchant;
 //   const handlePlayPauseClick = () => {
 //     setIsPlaying(prevState => {
 //       if (!prevState) {
-//         setVideoVisible(true); // Set videoVisible to true on first play button click
+//         settvVideoVisible(true); // Set tvVideoVisible to true on first play button click
 //       }
 //       return !prevState;
 //     });
@@ -736,7 +799,7 @@ export default SmartMerchant;
 //           {/* <audio id="isyintro" src={isyintro} preload="auto"></audio> */}
 //           <img id="smartm" src={smartmerchant} alt=""/>
 //         </a-assets>
-//         {!skipState && videoVisible && (
+//         {!skipState && tvVideoVisible && (
 //     // <a-entity
 //     //   material="shader: flat; side: double;  opacity: 1; transparent: true;"
 //     //   geometry="primitive:plane; width: 4; height: 2.5;"

@@ -37,6 +37,8 @@
    height:2rem;
    width: 10rem;
    animation: blinkAnimation 1s infinite;
+   align-items:center;
+   justify-content:space-between;
 }
 .subs-button:hover {
     animation: none;
@@ -89,6 +91,7 @@
   }
   .next-video-btn{
     display: flex;
+    position:absolute;
     margin-left:15px;
     background-color:rgb(38, 52, 117);
     border-radius: 3px;
@@ -100,6 +103,8 @@
     font-weight:bold;
     box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.1);
     justify-content:center;
+    left:90%;
+    top:-5%;
   }
   .next-video-btn:hover{
     background-color:rgb(213, 25, 24);

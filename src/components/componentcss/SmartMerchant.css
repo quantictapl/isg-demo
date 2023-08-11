@@ -18,3 +18,15 @@
     width:1px;
     position:absolute;
 }
+.loading-video{
+    height:100%;
+    width:100%;
+}
+.loading-container{
+    overflow:hidden;
+    display:flex;
+}
+body{
+  overflow:hidden;
+  box-sizing: border-box;
+}

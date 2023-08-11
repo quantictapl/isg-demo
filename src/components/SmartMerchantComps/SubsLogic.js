@@ -5,14 +5,27 @@ import demoTransparent from "../../SmartMerchantAssets/videos/dialog2.webm";
 import benifits from "../../SmartMerchantAssets/videos/benifits.webm";
 import { FaBullseye, FaPause, FaPlay } from "react-icons/fa";
 import { BsFillSkipForwardFill } from "react-icons/bs";
+import { BsFillSkipBackwardFill } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
+import demoAudio1 from "../../SmartMerchantAssets/videos/videoplayback.mp4";
+import smartIntro from "../../SmartMerchantAssets/videos/Dialogs/smartintro.webm";
+import smartIntroAudio from "../../SmartMerchantAssets/videos/Dialogs/smartintroAudio.mp4";
+import supermarketVideo from "../../SmartMerchantAssets/videos/Dialogs/supermarket.webm";
+import supermarketAudio from "../../SmartMerchantAssets/videos/Dialogs/supermarketAudio.mp4";
+import benfitsDialogVideo from "../../SmartMerchantAssets/videos/Dialogs/benfitsDialog.webm";
+import benifitsDialogAudio from "../../SmartMerchantAssets/videos/Dialogs/benifitsDialogAudio.mp4";
 const subtitleVideos = [
   {
-    audioSrc: demoAudio,
-    videoSrc: demoTransparent,
+    audioSrc: smartIntroAudio,
+    videoSrc: smartIntro,
   },
   {
-    audioSrc: demoAudio,
-    videoSrc: demoTransparent,
+    audioSrc: supermarketAudio,
+    videoSrc: supermarketVideo,
+  },
+  {
+    audioSrc: benifitsDialogAudio,
+    videoSrc: benfitsDialogVideo,
   },
 ];
 
@@ -22,20 +35,126 @@ function SubsLogic({
   isPlaying,
   onNextVideoClick,
   videoEnded,
-  cameraRotationEnded
+  cameraRotationEnded,
+  isTVVideoEnded,
+  onTVvideoShouldPlay
 }) {
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const [showPlayButton, setShowPlayButton] = useState(false);
   const [videoVisible, setVideoVisible] = useState(false);
   const audioRef = useRef(null);
   const transparentVideoRef = useRef(null);
-  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const [ispreviousBtnDisabled, setIspreviousBtnDisabled] = useState(false);
 
+  // const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  // onTVVideoPlay();
+  const navigate = useNavigate();
   const handleSkipClick = () => {
     onSkipClick(); // Call the skip callback function from the parent
     setVideoVisible(false);
     setShowPlayButton(false);
+    const nextVideoIndex = currentVideoIndex + 1;
+    if (nextVideoIndex < subtitleVideos.length ) {
+      setCurrentVideoIndex(nextVideoIndex);
+      if(nextVideoIndex===2){
+        onNextVideoClick(1);
+      }
+      else{
+        onNextVideoClick(nextVideoIndex);
+      }
+       // Call the callback function with the next video index
+    } else {
+      navigate("/smartmerchant/appdemo");
+      // All videos have been played, handle the end state here
+      // You may want to navigate somewhere or show a message, etc.
+    }
   };
+  const handlePreviousClick = () => {
+    onSkipClick(); // Call the skip callback function from the parent
+    
+    const previousVideoIndex = currentVideoIndex - 1;
+    // setIspreviousBtnDisabled(false)
+    if (previousVideoIndex>=1) {
+      setVideoVisible(false);
+      setShowPlayButton(false);
+      setCurrentVideoIndex(previousVideoIndex);
+      if(previousVideoIndex===1){
+        onNextVideoClick(0);
+      }
+      else if(previousVideoIndex===2)
+        onNextVideoClick(1);
+      // setIspreviousBtnDisabled(false)
+      
+      console.log(previousVideoIndex)
+     // Call the callback function with the next video index
+    } else{
+      setIspreviousBtnDisabled(true)
+      // All videos have been played, handle the end state here
+      // You may want to navigate somewhere or show a message, etc.
+    }
+  };
+  useEffect(()=>{
+    const handleNextSet = () => {
+      onSkipClick(); // Call the skip callback function from the parent
+      setVideoVisible(false);
+      setShowPlayButton(false);
+      const nextVideoIndex = currentVideoIndex + 1;
+      if (nextVideoIndex < subtitleVideos.length ) {// changed
+        setCurrentVideoIndex(nextVideoIndex);
+        if(nextVideoIndex===2){
+          onNextVideoClick(1)
+        }
+        else{
+          onNextVideoClick(nextVideoIndex); // Call the callback function with the next video index
+        }
+    
+      } else {
+        navigate("/smartmerchant/appdemo");
+        // All videos have been played, handle the end state here
+        // You may want to navigate somewhere or show a message, etc.
+      }
+    };
+    if(isTVVideoEnded){
+       handleNextSet();
+    }
+    // else{
+    //   onTVVideoPlay();
+    // }
+  },[currentVideoIndex, isTVVideoEnded, navigate, onNextVideoClick, onSkipClick])
+  const handleSmartDropDown = (event) => {
+    const selectedValue = event.target.value;
+    switch (selectedValue) {
+      case "market":
+        onSkipClick(); // Call the skip callback function from the parent
+        setVideoVisible(false);
+        setShowPlayButton(false);
+        setCurrentVideoIndex(1);
+        onNextVideoClick(0); // Call the callback function with the next video index
+        break;
+      case "benifits":
+        onSkipClick(); // Call the skip callback function from the parent
+        setVideoVisible(false);
+        setShowPlayButton(false);
+        setCurrentVideoIndex(2); //next Subs video
+        onNextVideoClick(1);// next Tv Video
+        break;
+      case "appdemo":
+        navigate("/smartmerchant/appdemo")
+        break;
+      default:
+        // Handle default case or do nothing
+        break;
+    }
+  };
+useEffect(()=>{
+   if(currentVideoIndex<=1){//changed
+    setIspreviousBtnDisabled(true)
+   }
+   else{
+    setIspreviousBtnDisabled(false)
+   }
+},[currentVideoIndex])
+
 
   useEffect(() => {
     const transparentVideoElement = transparentVideoRef.current;
@@ -46,10 +165,19 @@ function SubsLogic({
       transparentVideoElement.play();
     };
   
-    const handleVideoEnd = () => {
-      setVideoVisible(false); // Hide the transparent video after it ends
-      setShowPlayButton(true);
-      videoEnded();
+    const handleVideoEnd = () => {// changed to add the smartmerchant intro before the upermarketvideo
+      if(currentVideoIndex<1){
+        setCurrentVideoIndex(1)
+        setVideoVisible(false);
+        console.log("less than 1")
+      }
+      else if(currentVideoIndex>=1){
+        setVideoVisible(false); // Hide the transparent video after it ends
+        setShowPlayButton(true);
+        onTVvideoShouldPlay();  //tvVideo should play right after the subsVideo(transparentVideo) ends
+        //  videoEnded();
+        console.log("more than 1")
+      }
     };
   
     transparentVideoElement.addEventListener("ended", handleVideoEnd);
@@ -76,6 +204,7 @@ function SubsLogic({
   useEffect(() => {
     if (videoEnded) {
       setShowPlayButton(false);
+      
     }
   }, [videoEnded]);
 
@@ -97,19 +226,34 @@ function SubsLogic({
   }, [videoVisible]);
   console.log(showPlayButton);
   const handleNextVideo = () => {
-    if (currentVideoIndex < subtitleVideos.length - 1) {
+   
+    if (currentVideoIndex < subtitleVideos.length - 1  || isTVVideoEnded) {
       setCurrentVideoIndex(currentVideoIndex + 1);
       onNextVideoClick(currentVideoIndex + 1);
+   
       console.log(showPlayButton); // Call the callback function with the next video index
+    }else if(currentVideoIndex===subtitleVideos.length-1){
+    navigate("/smartmerchant/appdemo")
+
     } else {
       // All videos have been played, handle the end state here
+      
     }
+    
   };
-  console.log(videoEnded);
+  // console.log(videoEnded);
+  console.log("tvVideo ended is",isTVVideoEnded);
  
-  return (
+  return (<>
+    <select defaultValue="" className="smart-dropdown" id="smart-app-dropdown" onChange={handleSmartDropDown}>
+    <option value="none" disabled>Select Demo</option>
+    <option value="market">Merchant Payments</option>
+    <option value="benifits">ISG Benefits</option>
+    <option value="appdemo">App Demonstration</option>
+  
+  </select>
     <div className="demo-subs-container">
-      <button onClick={handleNextVideo} className="next-video-btn">Next</button>
+      {/* <button onClick={handlePreviousClick} className="next-video-btn" disabled={ispreviousBtnDisabled}>Next</button> */}
       <div className="demo-subs-main-container">
       <video id="subsVideo"
             ref={transparentVideoRef}
@@ -131,18 +275,33 @@ function SubsLogic({
             <div>
               <button className="subs-button" onClick={onPlayPauseClick}>
                 {isPlaying ? (
-                  
+                  <>
                      <FaPause className="smart-icon" />
-                  
+                     <span>Pause</span>
+                  </>
                 ) : (
-                  
+                  <>
                      <FaPlay className="smart-icon" />
-                  
+                     <span>Play</span>
+                  </>
                 )}
+              </button>
+              <button onClick={handlePreviousClick} className="subs-button skip" 
+              disabled={ispreviousBtnDisabled}
+              style={{ display: ispreviousBtnDisabled ? "none" : "flex" }} >
+              <div className="button-interior">
+                  <>
+                  <BsFillSkipBackwardFill className="smart-icon previous-icon" />
+                  <span>Prev</span>
+                  </>
+                </div>
               </button>
               <button className="subs-button skip" onClick={handleSkipClick}>
                 <div className="button-interior">
+                  <>
                   <BsFillSkipForwardFill className="smart-icon skip-icon" />
+                  <span>Skip</span>
+                  </>
                 </div>
               </button>
             </div>
@@ -157,10 +316,9 @@ function SubsLogic({
         controls={false}
         preload="auto"
         className="demo-subs subs-audio"
-      />
-
-      
+      />      
     </div>
+    </>
   );
 }
 

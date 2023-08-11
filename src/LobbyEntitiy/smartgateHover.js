@@ -9,6 +9,7 @@ import "aframe-event-set-component";
 import "aframe-ui-components";
 import logo from "../images/smartlogo.png"
 import { useNavigate } from "react-router-dom";
+import "aframe-text-geometry-component";
 
 
 function SmartgateHover() {

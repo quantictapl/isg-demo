@@ -1,0 +1,55 @@
+.scene-container{
+    height:100%;
+    position:relative;
+    top:0%;
+    /* overflow: hidden;  */
+}
+
+.demo-play-btn{
+    height:4rem;
+    width:4rem;
+    background-color: brown;
+}
+/* .benifits-audio{
+    visibility: hidden;
+    height:10px;
+    width:100px;
+    position:absolute;
+} */
+.audio-element{
+    visibility: visible;
+    height:1px;
+    width:1px;
+    position:absolute;
+    opacity:0;
+    top:0%;
+    /* z-index:101; */
+}
+.smart-dropdown{
+    position:absolute;
+    height:3rem;
+    width:10rem;
+    top:10%;
+    left:2%;
+    border:0px;
+    outline:0px;
+    color:white;
+    z-index:101;
+    border:none;
+    background: transparent;
+    background-image: url('../../SmartMerchantAssets/select_bg.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    border-right:5px solid transparent;
+    font-size: large;
+}
+.smart-dropdown:focus,.smart-dropdown:active{
+    border:none;
+}
+.smart-dropdown option{
+   background-color: rgb(15, 64, 144);
+   /* background-image: linear-gradient(to bottom right, rgb(15, 64, 144), rgb(5, 36, 121)); */
+}
