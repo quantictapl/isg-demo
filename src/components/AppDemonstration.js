@@ -993,9 +993,11 @@ import { resetUserSession } from "../service/AuthService";
 import { useNavigate } from "react-router-dom";
 import HideVRButton from "./HideVRButton";
 import smartmerchant from "../WithTable.jpg";
+import Popup from "reactjs-popup";
+// import 'reactjs-popup/dist/index.css';
 // import "./componentcss/SmartMerchant.css";
 import "aframe-event-set-component";
-import esy from "../SmartMerchantAssets/Esy.glb";
+import esy from "../SmartMerchantAssets/esy_new.glb";
 import tvImg from "../SmartMerchantAssets/tvBorder.png";
 // import paymentMethod from "../SmartMerchantAssets/paymentmethod/PaymentMethod.glb";
 import appLoading1 from "../SmartMerchantAssets/apploading/apploading1.glb";
@@ -1068,60 +1070,9 @@ import datahandling from "../SmartMerchantAssets/datahandling/datahandlingasset.
 import datahandlingimg from "../SmartMerchantAssets/datahandling/datahandling.png";
 import refundasset from "../SmartMerchantAssets/refundprocess/refundasset.glb";
 import refundimg from "../SmartMerchantAssets/refundprocess/refundimg.png";
+import invisible from "../SmartMerchantAssets/invisible.glb";
+import "./CameraRotationLimit"
 
-// import "./look-controls-limited"
-import { registerComponent } from "aframe";
-registerComponent("looklimited", {
-  schema: {
-    maxYaw: { default: 10 }, // Adjust this value to set the maximum yaw range
-  },
-
-  init: function () {
-    this.yawRange = THREE.MathUtils.degToRad(this.data.maxYaw);
-    this.bindMethods();
-  },
-
-  bindMethods: function () {
-    this.onLookMove = this.onLookMove.bind(this);
-    this.onMouseDown = this.onMouseDown.bind(this);
-  },
-
-  play: function () {
-    this.addEventListeners();
-  },
-
-  pause: function () {
-    this.removeEventListeners();
-  },
-
-  addEventListeners: function () {
-    this.el.addEventListener("thumbstickmoved", this.onLookMove);
-    this.el.addEventListener("touchmove", this.onLookMove);
-    this.el.addEventListener("mousemove", this.onLookMove);
-    this.el.addEventListener("mousedown", this.onMouseDown);
-  },
-
-  removeEventListeners: function () {
-    this.el.removeEventListener("thumbstickmoved", this.onLookMove);
-    this.el.removeEventListener("touchmove", this.onLookMove);
-    this.el.removeEventListener("mousemove", this.onLookMove);
-    this.el.removeEventListener("mousedown", this.onMouseDown);
-  },
-
-  onLookMove: function (event) {
-    var rotation = this.el.object3D.rotation;
-
-    if (Math.abs(rotation.y) >= this.yawRange) {
-      // Reset rotation if it exceeds the maximum yaw range
-      rotation.y = Math.sign(rotation.y) * this.yawRange;
-    }
-  },
-
-  onMouseDown: function (event) {
-    // Prevent default mouse down behavior to avoid interference
-    event.preventDefault();
-  },
-});
 var assetJson = {
   apploading: {
     phoneImages: [
@@ -1129,28 +1080,32 @@ var assetJson = {
         name: "appimg1",
         imagePath: qrcode,
         buttonPosition: { x: 0.023, y: 0.088 },
-        width:3.8,
-        height:3.8,
-        position:{x:0.00396, y:0.08907, z:-0.96379},
-        rotation:{x:2.8447354528245374, y:-0.4526366581533504, z:-0.1753250853100319}
+        width: 3.8,
+        height: 3.8,
+        position: { x: 0.00396, y: 0.08907, z: -0.96379 },
+        rotation: {
+          x: 2.8447354528245374,
+          y: -0.4526366581533504,
+          z: -0.1753250853100319,
+        },
       },
       {
         name: "appimg2",
         imagePath: appimg2,
         buttonPosition: { x: 0.642, y: 0.024 },
-        width:2,
-        height:3.8,
-        position:{x:0.65229, y:-0.006, z:-0.98319},
-        rotation:{x:0.529, y:-8.097, z:0.751}
+        width: 2,
+        height: 3.8,
+        position: { x: 0.65229, y: -0.006, z: -0.98319 },
+        rotation: { x: 0.529, y: -8.097, z: 0.751 },
       },
       {
         name: "appimg3",
         imagePath: appimg3,
         buttonPosition: { x: 0.642, y: 0.024 },
-        width:2,
-        height:3.8,
-        position:{x:0.65229, y:-0.006, z:-0.98319},
-        rotation:{x:0.529, y:-8.097, z:0.751}
+        width: 2,
+        height: 3.8,
+        position: { x: 0.65229, y: -0.006, z: -0.98319 },
+        rotation: { x: 0.529, y: -8.097, z: 0.751 },
       },
       // {
       //   name: "appimg4",
@@ -1165,7 +1120,7 @@ var assetJson = {
     phoneAssets: [
       {
         name: "apploading1",
-        imagePath: "",
+        imagePath: invisible,
         animation: "",
         scale: { x: 0.034, y: 0.034, z: 0.034 },
         position: { x: -0.97307, y: -3.08774, z: -3.43762 },
@@ -1235,46 +1190,46 @@ var assetJson = {
         name: "appintro1",
         imagePath: appintro1,
         buttonPosition: { x: 0.58124, y: -0.22324 },
-        width:2,
-        height:3.8,
-        position:{x:0.65229, y:-0.006, z:-0.98319},
-        rotation:{x:0.529, y:-8.097, z:0.751}
+        width: 2,
+        height: 3.8,
+        position: { x: 0.65229, y: -0.006, z: -0.98319 },
+        rotation: { x: 0.529, y: -8.097, z: 0.751 },
       },
       {
         name: "appintro2",
         imagePath: appintro2,
         buttonPosition: { x: 0.635, y: -0.294 },
-        width:2,
-        height:3.8,
-        position:{x:0.65229, y:-0.006, z:-0.98319},
-        rotation:{x:0.529, y:-8.097, z:0.751}
+        width: 2,
+        height: 3.8,
+        position: { x: 0.65229, y: -0.006, z: -0.98319 },
+        rotation: { x: 0.529, y: -8.097, z: 0.751 },
       },
       {
         name: "appintro3",
         imagePath: appintro3,
         buttonPosition: { x: 0.692, y: -0.043 },
-        width:2,
-        height:3.8,
-        position:{x:0.65229, y:-0.006, z:-0.98319},
-        rotation:{x:0.529, y:-8.097, z:0.751}
+        width: 2,
+        height: 3.8,
+        position: { x: 0.65229, y: -0.006, z: -0.98319 },
+        rotation: { x: 0.529, y: -8.097, z: 0.751 },
       },
       {
         name: "appintro4",
         imagePath: appintro4,
         buttonPosition: { x: 0.635, y: -0.294 },
-        width:2,
-        height:3.8,
-        position:{x:0.65229, y:-0.006, z:-0.98319},
-        rotation:{x:0.529, y:-8.097, z:0.751}
+        width: 2,
+        height: 3.8,
+        position: { x: 0.65229, y: -0.006, z: -0.98319 },
+        rotation: { x: 0.529, y: -8.097, z: 0.751 },
       },
       {
         name: "appintro5",
         imagePath: appintro5,
         buttonPosition: { x: 0.69, y: -0.143 },
-        width:2,
-        height:3.8,
-        position:{x:0.65229, y:-0.006, z:-0.98319},
-        rotation:{x:0.529, y:-8.097, z:0.751}
+        width: 2,
+        height: 3.8,
+        position: { x: 0.65229, y: -0.006, z: -0.98319 },
+        rotation: { x: 0.529, y: -8.097, z: 0.751 },
       },
     ],
     phoneAssets: [
@@ -1366,28 +1321,28 @@ var assetJson = {
         name: "userregimg1",
         imagePath: userregimg1,
         buttonPosition: { x: 0.662, y: -0.285 },
-        width:2,
-        height:3.8,
-        position:{x:0.65229, y:-0.006, z:-0.98319},
-        rotation:{x:0.529, y:-8.097, z:0.751}
+        width: 2,
+        height: 3.8,
+        position: { x: 0.65229, y: -0.006, z: -0.98319 },
+        rotation: { x: 0.529, y: -8.097, z: 0.751 },
       },
       {
         name: "userregimg2",
         imagePath: userregimg2,
         buttonPosition: { x: 0.642, y: 0.024 },
-        width:2,
-        height:3.8,
-        position:{x:0.65229, y:-0.006, z:-0.98319},
-        rotation:{x:0.529, y:-8.097, z:0.751}
+        width: 2,
+        height: 3.8,
+        position: { x: 0.65229, y: -0.006, z: -0.98319 },
+        rotation: { x: 0.529, y: -8.097, z: 0.751 },
       },
       {
         name: "userregimg3",
         imagePath: userregimg3,
         buttonPosition: { x: 0.603, y: -0.289 },
-        width:2,
-        height:3.8,
-        position:{x:0.65229, y:-0.006, z:-0.98319},
-        rotation:{x:0.529, y:-8.097, z:0.751}
+        width: 2,
+        height: 3.8,
+        position: { x: 0.65229, y: -0.006, z: -0.98319 },
+        rotation: { x: 0.529, y: -8.097, z: 0.751 },
       },
     ],
     phoneAssets: [
@@ -1447,28 +1402,28 @@ var assetJson = {
         name: "paymentimg1",
         imagePath: paymentmethodimg1,
         buttonPosition: { x: 0.662, y: -0.285 },
-        width:2,
-        height:3.8,
-        position:{x:0.65229, y:-0.006, z:-0.98319},
-        rotation:{x:0.529, y:-8.097, z:0.751}
+        width: 2,
+        height: 3.8,
+        position: { x: 0.65229, y: -0.006, z: -0.98319 },
+        rotation: { x: 0.529, y: -8.097, z: 0.751 },
       },
       {
         name: "paymentimg2",
         imagePath: paymentmethodimg2,
         buttonPosition: { x: 0.642, y: 0.024 },
-        width:2,
-        height:3.8,
-        position:{x:0.65229, y:-0.006, z:-0.98319},
-        rotation:{x:0.529, y:-8.097, z:0.751}
+        width: 2,
+        height: 3.8,
+        position: { x: 0.65229, y: -0.006, z: -0.98319 },
+        rotation: { x: 0.529, y: -8.097, z: 0.751 },
       },
       {
         name: "paymentimg3",
         imagePath: paymentmethodimg3,
         buttonPosition: { x: 0.603, y: -0.289 },
-        width:2,
-        height:3.8,
-        position:{x:0.65229, y:-0.006, z:-0.98319},
-        rotation:{x:0.529, y:-8.097, z:0.751}
+        width: 2,
+        height: 3.8,
+        position: { x: 0.65229, y: -0.006, z: -0.98319 },
+        rotation: { x: 0.529, y: -8.097, z: 0.751 },
       },
     ],
     phoneAssets: [
@@ -1528,28 +1483,28 @@ var assetJson = {
         name: "rtpmethod1",
         imagePath: rtpimg1,
         buttonPosition: { x: 0.662, y: -0.285 },
-        width:2,
-        height:3.8,
-        position:{x:0.65229, y:-0.006, z:-0.98319},
-        rotation:{x:0.529, y:-8.097, z:0.751}
+        width: 2,
+        height: 3.8,
+        position: { x: 0.65229, y: -0.006, z: -0.98319 },
+        rotation: { x: 0.529, y: -8.097, z: 0.751 },
       },
       {
         name: "rtpimg2",
         imagePath: rtpimg2,
         buttonPosition: { x: 0.642, y: 0.024 },
-        width:2,
-        height:3.8,
-        position:{x:0.65229, y:-0.006, z:-0.98319},
-        rotation:{x:0.529, y:-8.097, z:0.751}
+        width: 2,
+        height: 3.8,
+        position: { x: 0.65229, y: -0.006, z: -0.98319 },
+        rotation: { x: 0.529, y: -8.097, z: 0.751 },
       },
       {
         name: "rtpimg3",
         imagePath: rtpimg3,
         buttonPosition: { x: 0.603, y: -0.289 },
-        width:2,
-        height:3.8,
-        position:{x:0.65229, y:-0.006, z:-0.98319},
-        rotation:{x:0.529, y:-8.097, z:0.751}
+        width: 2,
+        height: 3.8,
+        position: { x: 0.65229, y: -0.006, z: -0.98319 },
+        rotation: { x: 0.529, y: -8.097, z: 0.751 },
       },
     ],
     phoneAssets: [
@@ -1609,28 +1564,28 @@ var assetJson = {
         name: "recpayvideo1",
         imagePath: recpayvideo1,
         buttonPosition: { x: 0.662, y: -0.285 },
-        width:2,
-        height:3.8,
-        position:{x:0.65229, y:-0.006, z:-0.98319},
-        rotation:{x:0.529, y:-8.097, z:0.751}
+        width: 2,
+        height: 3.8,
+        position: { x: 0.65229, y: -0.006, z: -0.98319 },
+        rotation: { x: 0.529, y: -8.097, z: 0.751 },
       },
       {
         name: "recpayvideo2",
         imagePath: recpayvideo2,
         buttonPosition: { x: 0.642, y: 0.024 },
-        width:2,
-        height:3.8,
-        position:{x:0.65229, y:-0.006, z:-0.98319},
-        rotation:{x:0.529, y:-8.097, z:0.751}
+        width: 2,
+        height: 3.8,
+        position: { x: 0.65229, y: -0.006, z: -0.98319 },
+        rotation: { x: 0.529, y: -8.097, z: 0.751 },
       },
       {
         name: "recpayvideo3",
         imagePath: recpayvideo3,
         buttonPosition: { x: 0.603, y: -0.289 },
-        width:2,
-        height:3.8,
-        position:{x:0.65229, y:-0.006, z:-0.98319},
-        rotation:{x:0.529, y:-8.097, z:0.751}
+        width: 2,
+        height: 3.8,
+        position: { x: 0.65229, y: -0.006, z: -0.98319 },
+        rotation: { x: 0.529, y: -8.097, z: 0.751 },
       },
     ],
     phoneAssets: [
@@ -1690,10 +1645,10 @@ var assetJson = {
         name: "datahandling",
         imagePath: datahandlingimg,
         buttonPosition: { x: 0.662, y: -0.285 },
-        width:2,
-        height:3.8,
-        position:{x:0.65229, y:-0.006, z:-0.98319},
-        rotation:{x:0.529, y:-8.097, z:0.751}
+        width: 2,
+        height: 3.8,
+        position: { x: 0.65229, y: -0.006, z: -0.98319 },
+        rotation: { x: 0.529, y: -8.097, z: 0.751 },
       },
     ],
     phoneAssets: [
@@ -1721,10 +1676,10 @@ var assetJson = {
         name: "refundimg",
         imagePath: refundimg,
         buttonPosition: { x: 0.662, y: -0.285 },
-        width:2,
-        height:3.8,
-        position:{x:0.65229, y:-0.006, z:-0.98319},
-        rotation:{x:0.529, y:-8.097, z:0.751}
+        width: 2,
+        height: 3.8,
+        position: { x: 0.65229, y: -0.006, z: -0.98319 },
+        rotation: { x: 0.529, y: -8.097, z: 0.751 },
       },
     ],
     phoneAssets: [
@@ -1775,6 +1730,8 @@ function AppDemonstration() {
   const [assetsVisible, setAssetsVisible] = useState(true);
   const [extrasVisible, setExtrasVisible] = useState(false);
   const [lastSkipTime, setLastSkipTime] = useState(0);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [playNextAssets, setPlayNextAssests] = useState(false);
 
   useEffect(() => {
     // Simulating page load after 3 seconds
@@ -1875,16 +1832,17 @@ function AppDemonstration() {
       video.removeEventListener("loadedmetadata", handleAudioLoadedMetadata); // Removed event listener for subsVideoRef
     };
   }, [subsVideoRef, subsAudioRef, mute]);
+
   const video = subsVideoRef.current;
   const audio = subsAudioRef.current;
   const loadNextAssets = (currentAssets, cacheBuster) => {
     const videoSrc = currentAssets.phoneAssets[0].video;
     const audioSrc = currentAssets.phoneAssets[0].audio;
     video.src = videoSrc + "?cache=" + cacheBuster;
-  
+
     video.addEventListener("loadedmetadata", () => {
       video.play();
-  
+
       if (!audio.paused && audio.currentTime < video.currentTime) {
         audio.currentTime = video.currentTime;
       } else {
@@ -1892,19 +1850,33 @@ function AppDemonstration() {
       }
     });
   };
-  
+
   // Helper function to handle transition between assets
   const handleTransition = (currentAssets) => {
     setCurrentPhoneAssetIndex(0);
     setCurrentPhoneImageIndex(0);
     setAnimationClicked(false);
     setExtrasVisible(false);
-  
-    if (currentDivision === "rtpmethod" || currentDivision === "refundprocess") {
+
+    if (
+      currentDivision === "rtpmethod" ||
+      currentDivision === "refundprocess"
+    ) {
       setExtrasVisible(true);
     }
+    
+  };
+  const openPopup = () => {
+    setIsPopupOpen(true);
+    setPlayNextAssests(false);
+    return;
   };
 
+  const closePopup = () => {
+    setIsPopupOpen(false);
+    setPlayNextAssests(true);
+    console.log(playNextAssets);
+  };
   useEffect(() => {
     const video = subsVideoRef.current;
     const audio = subsAudioRef.current;
@@ -1999,7 +1971,7 @@ function AppDemonstration() {
       setCurrentPhoneAssetIndex(0); // Reset the asset index
       setCurrentPhoneImageIndex(0); // Reset the image index
 
-      loadNextAssets(currentAssets, cacheBuster);  
+      loadNextAssets(currentAssets, cacheBuster);
       setTimeout(() => {
         handleTransition(currentAssets);
         setTimeout(() => {
@@ -2063,39 +2035,39 @@ function AppDemonstration() {
       };
 
       const handleTransition = () => {
+        // if (
+        //   currentDivision === divisions[divisions.length - 1] &&
+        //   nextPhoneAssetIndex === 0
+        // ) {
+        //   // Last division and last asset loaded
+        //   setAssetsVisible(false);
+
+        //   console.log(assetsVisible);
+        //   // setTimeout(()=>{
+        //   //   setAssetsVisible(false);
+        //   //   console.log(assetsVisible)
+        //   // } 2500)
+        // } else {
+        setCurrentPhoneAssetIndex(nextPhoneAssetIndex);
+        setCurrentPhoneImageIndex(nextPhoneImageIndex);
+        setAnimationClicked(false);
+        setExtrasVisible(false);
         if (
-          currentDivision === divisions[divisions.length - 1] &&
-          nextPhoneAssetIndex === 0
+          currentDivision === "rtpmethod" ||
+          currentDivision === "refundprocess"
         ) {
-          // Last division and last asset loaded
-          setAssetsVisible(false);
-
-          console.log(assetsVisible);
-          // setTimeout(()=>{
-          //   setAssetsVisible(false);
-          //   console.log(assetsVisible)
-          // } 2500)
+          setExtrasVisible(true);
         } else {
-          setCurrentPhoneAssetIndex(nextPhoneAssetIndex);
-          setCurrentPhoneImageIndex(nextPhoneImageIndex);
-          setAnimationClicked(false);
           setExtrasVisible(false);
-          if (
-            currentDivision === "rtpmethod" ||
-            currentDivision === "refundprocess"
-          ) {
-            setExtrasVisible(true);
-          } else {
-            setExtrasVisible(false);
-          }
-
-          // arrowEntity.setAttribute("visible",false);
-          buttonEntity.addEventListener("click", handleClick);
-          console.log("Event listener added");
-          buttonEntity.removeEventListener("click", handleClick);
-          console.log("Event listener removed");
-          buttonEntity.setAttribute("visible", "true");
         }
+
+        // arrowEntity.setAttribute("visible",false);
+        buttonEntity.addEventListener("click", handleClick);
+        console.log("Event listener added");
+        buttonEntity.removeEventListener("click", handleClick);
+        console.log("Event listener removed");
+        buttonEntity.setAttribute("visible", "true");
+        // }
       };
 
       // Check if all assets in the current division are loaded
@@ -2110,10 +2082,9 @@ function AppDemonstration() {
           if (currentPhoneAssetIndex === 0) {
             // arrowEntity.setAttribute("visible",true);
             setExtrasVisible(true);
+          } else {
+            setExtrasVisible(false);
           }
-          // else{
-          //     setExtrasVisible(false);
-          // }
         }
       } else {
         const nextDivisionIndex = (currentDivisionIndex + 1) % divisions.length;
@@ -2121,26 +2092,32 @@ function AppDemonstration() {
 
         if (nextDivisionIndex === 0 && nextPhoneAssetIndex === 0) {
           // JSON iteration completed
-          if (
-            currentDivision === "rtpmethod" ||
-            currentDivision === "refundprocess"
-          ) {
-            setExtrasVisible(true);
-            // arrowEntity.setAttribute("visible",true);
-            if (currentPhoneAssetIndex === 0) {
-              // arrowEntity.setAttribute("visible",true);
-              setExtrasVisible(true);
-            } else {
-              setExtrasVisible(false);
-            }
-          }
+
           setTimeout(() => {
-            setAssetsVisible(false);
-            video.style.display = "none";
-            audio.removeAttribute("src");
-            console.log(assetsVisible);
+            openPopup();
           }, 2500);
-          return;
+          if (playNextAssets) {
+            setCurrentDivision(nextDivision);
+            setCurrentPhoneAssetIndex(0); // Reset the asset index
+            setCurrentPhoneImageIndex(0); // Reset the image index
+
+            loadNextAssets();
+            console.log(playNextAssets);
+          }
+          console.log(playNextAssets);
+        }
+        if (
+          currentDivision === "rtpmethod" ||
+          currentDivision === "refundprocess"
+        ) {
+          setExtrasVisible(true);
+          // arrowEntity.setAttribute("visible",true);
+          if (currentPhoneAssetIndex === 0) {
+            // arrowEntity.setAttribute("visible",true);
+            setExtrasVisible(true);
+          } else {
+            setExtrasVisible(false);
+          }
         }
         setTimeout(() => {
           setCurrentDivision(nextDivision);
@@ -2160,7 +2137,7 @@ function AppDemonstration() {
     console.log("Event listener added");
 
     const handleDivisionButtonClick = (event) => {
-      const selectedDivision=event.target.value;
+      const selectedDivision = event.target.value;
       const divisions = Object.keys(assetJson);
       const currentDivisionIndex = divisions.indexOf(currentDivision);
       const nextDivisionIndex = (currentDivisionIndex + 1) % divisions.length;
@@ -2200,7 +2177,7 @@ function AppDemonstration() {
           buttonEntity.setAttribute("visible", "false");
         }
       }, 2500);
-      
+
       setCurrentDivision(event.target.value);
       setCurrentPhoneAssetIndex(0); // Reset the asset index
       setCurrentPhoneImageIndex(0); // Reset the image index
@@ -2299,30 +2276,7 @@ function AppDemonstration() {
     window.addEventListener("wheel", handleZoom);
     return () => window.removeEventListener("wheel", handleZoom);
   });
-  useEffect(() => {
-    const camera = document.getElementById("camera");
-    const logCameraRotation = () => {
-      if (cameraRef.current && cameraRef.current.object3D) {
-        const rotation = camera.object3D.rotation;
-        const { x, y, z } = rotation;
-
-        // Apply the restriction for x-axis rotation between 0.034 and 0.044
-        if (x < 0.034) {
-          rotation.x = 0.034;
-        } else if (x > 0.044) {
-          rotation.x = 0.044;
-        }
-
-        cameraRef.current.object3D.rotation.copy(rotation);
-      }
-    };
-
-    const interval = setInterval(logCameraRotation, 100); // Adjust the interval duration as needed
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
+  
   // useEffect(() => {
   //   const phoneAsset = document.getElementById("phone-asset");
   //   if (animationClicked) {
@@ -2369,18 +2323,42 @@ function AppDemonstration() {
   //};
   // console.log(mute);
   return (
-    <div  className="scene-container" onClick={() => setMute(false)}>
-      <select defaultValue="" className="smart-dropdown" id="smart-app-dropdown">
-    <option value="none" disabled>Select Demo</option>
-    <option value="apploading">App Installation</option>
-    <option value="appintro">App Introduction</option>
-    <option value="userreg">User Registration</option>
-    <option value="paymentmethod">Payment Method</option>
-    <option value="rtpmethod">RTP Method</option>
-    <option value="recpay">Records/Payments</option>
-    <option value="datahandling">Data Handling</option>
-    <option value="refundprocess">Refund process</option>
-  </select>
+    <div className="scene-container" onClick={() => setMute(false)}>
+      <HideVRButton />
+      <Popup
+        className="appdemo-popup"
+        open={isPopupOpen}
+        onClose={closePopup}
+        position="right center"
+      >
+        <div className="appdemo-popup-container">
+          <div className="appdemo-popup-text">
+            The app demonstration is completed. Click Back to lobby to return to
+            lobby or cancel to continue with the demonstation
+          </div>
+          <div className="popup-btn-container">
+            <button className="appdemo-popup-btn" onClick={handleLobbyClick}>Back to lobby</button>{" "}
+            <button className="appdemo-popup-btn" onClick={closePopup}>Cancel</button>
+          </div>
+        </div>
+      </Popup>
+      <select
+        defaultValue=""
+        className="smart-dropdown"
+        id="smart-app-dropdown"
+      >
+        <option value="none" disabled>
+          Select Demo
+        </option>
+        <option value="apploading">App Installation</option>
+        <option value="appintro">App Introduction</option>
+        <option value="userreg">User Registration</option>
+        <option value="paymentmethod">Payment Method</option>
+        <option value="rtpmethod">RTP Method</option>
+        <option value="recpay">Records/Payments</option>
+        <option value="datahandling">Data Handling</option>
+        <option value="refundprocess">Refund process</option>
+      </select>
       <video
         src={currentPhoneAsset.subsVideo.audio}
         ref={subsAudioRef}
@@ -2417,6 +2395,7 @@ function AppDemonstration() {
         /> */}
       </div>
       <Scene
+        light="defaultLightsEnabled: false"
         inspector="url: https://cdn.jsdelivr.net/gh/aframevr/aframe@d52af46565230a33c0fa23e045fb74e877df7dc9/dist/aframe-master.min.js"
         cursor="rayOrigin: mouse"
         // raycaster="objects: [data-clickable]; far: 100"
@@ -2430,19 +2409,38 @@ function AppDemonstration() {
         embedded={true}
       >
         <a-entity id="camera-rig" position="0 0 0" ref={cameraRotationRef}>
-          <Entity
-            id="camera"
-            wasd-controls-enabled="false"
-            primitive="a-camera"
-            ref={cameraRef}
-            position="0 0 0"
-            zoom={zoom}
-            near="0.05"
-            far="10000"
-            camera="active:true"
-            look-controls="reverseMouseDrag:true"
-            // looklimited
+        <a-entity
+             id="camera"
+             rotation="0 -45 0"
+             wasd-controls-enabled="false"
+             camera={`userHeight:1.6; active:true; zoom:${zoom};`}
+             look-controls="true"
+             ref={cameraRef}
+             position="0 0 0"
+             // zoom={zoom}
+             // near="0.05"
+             // far="10000"
+             // fov="100"
+             // camera="active:true"
+             //look-controls-limited="true"
+             camera-rotation-limit="minRotation:-30; maxRotation: 0;"
+             
+             // looklimited
           >
+            <a-entity
+              id="phone-light-1"
+              light="type: spot; castShadow: true; intensity: 1.5; distance: 200; color: #ffffff; penumbra: 1; angle: 40; groundColor: #ffffff; shadowCameraRight: 7.22; decay: -0.33"
+              position="0.02127 1.151 -0.60992"
+              rotation="-77.21523021860052 129.48044029043422 60.95468799278776"
+              scale="0.2 0.2 0.2"
+            ></a-entity>
+            <a-entity
+              id="phone-light-2"
+              light="type: spot; castShadow: true; intensity: 0.4; distance: 197.68; color: #a0d8e3; penumbra: 0.13; angle: 40; groundColor: #ffdc2e; shadowCameraRight: 7.22; decay: -0.66"
+              position="-0.02859 4.44158 1.81392"
+              rotation="-64.51791252070635 20.737061479169885 172.13084560217757"
+              scale="0.2 0.2 0.2"
+            ></a-entity>
             {/* <a-entity
           gltf-model={paymentMethod}
           scale="0.5 0.5 0.5"
@@ -2568,7 +2566,7 @@ function AppDemonstration() {
               raycaster="objects: [gui-interactable]; near:1 far:20;"
               // onClick={handleMerchantClick}
             ></a-entity>
-          </Entity>
+          </a-entity>
         </a-entity>
 
         <a-assets>
@@ -2628,30 +2626,38 @@ function AppDemonstration() {
         <a-sky color="#ECECEC" scale="3 3 3"></a-sky>
         <Entity primitive="a-sky" color="#ECECEC" scale="3 3 3" />
         {/* <a-entity id="ambient" light="type: ambient; intensity:0.2;"></a-entity> */}
-        <a-entity
+        {/* <a-entity
           id="directional"
           light="type: directional; castShadow:true; intensity:1;  position:0 20 0; color:#FFFFFF"
-        ></a-entity>
+        ></a-entity> */}
         <a-entity
           id="spot1"
-          light="type: spot; castShadow: true; intensity: 0.25; distance: 15; color: white; angle: 60.16"
-          position="6.26958 3.91449 64.86643"
-          rotation="49.99973494988642 -156.67244428954794 20.000237754631645"
-        ></a-entity>
-        <a-entity
-          light="color: #ffffff; decay: 0; distance: 15.8; intensity: 0.4; type: spot"
-          id="spot-light"
-          position="-2.52809 0.72938 2"
+          light="type: spot; castShadow: true; intensity: 9; distance: 46.25; color: white; penumbra: 1; angle: 20"
+          position="33.933 -8.73 2.177"
+          rotation="6.428013503572705 53.874648518356175 -62.41916811714215"
+          scale="0.2 0.2 0.2"
         ></a-entity>
         <a-entity
           id="spot2"
-          light="type: spot; castShadow: true; intensity: 0.38; decay: 0; distance: 15; color: white; angle: 60.16"
-          position="-3.47559 2.02332 -3.3246"
+          light="type: spot; castShadow: true; intensity: 3; distance: 46.25; color: white; penumbra: 1; angle: 30"
+          position="-18.60183 -0.329 3.43627"
+          rotation="-9.325 -40.88 7.024"
+          scale="0.2 0.2 0.2"
         ></a-entity>
+
         <a-entity
           id="spot3"
-          light="type: spot; castShadow: true; intensity: 0.34; decay: 0; distance: 15; color: white; angle: 60.16"
-          position="3.47559 2.02332 -6.3246"
+          light="type: spot; castShadow: true; intensity: 5.25; distance: 46.25; color: white; penumbra: 1; angle: 30; decay: 1.1"
+          position="-21.02744 -0.52743 -39.79053"
+          rotation="-1.5515697092142693 -135.06276808839382 43.00220139795368"
+          scale="0.2 0.2 0.2"
+        ></a-entity>
+        <a-entity
+          id="spot4"
+          light="type: spot; castShadow: true; intensity: 3.5; distance: 46.25; color: #30499c; penumbra: 1; angle: 20; groundColor: #ffffff"
+          position="20.43057 0 -24.38125"
+          rotation="2.7845748843358007 115.23556358789169 44.978332833359886"
+          scale="0.2 0.2 0.2"
         ></a-entity>
 
         {/* <a-entity
@@ -2666,9 +2672,9 @@ function AppDemonstration() {
         <a-entity
           gltf-model={esy}
           id="esy"
-          position="-1 -6 -12"
+          position="1.959 -6.000 -15.915"
           scale="0.18 0.18 0.18"
-          rotation="0 1  0"
+          rotation="0 -8.586  0"
           shadow="cast:true; receive:false;"
           // animation-mixer="clip:;loop:repeat;repetitions:Infinity;"
         />
@@ -2874,7 +2880,7 @@ export default AppDemonstration;
 //     setCurrentPhoneAssetIndex(0); // Reset the asset index
 //     setCurrentPhoneImageIndex(0); // Reset the image index
 
-//     loadNextAssets(currentAssets, cacheBuster);  
+//     loadNextAssets(currentAssets, cacheBuster);
 //     setTimeout(() => {
 //       handleTransition(currentAssets);
 //       setTimeout(() => {
@@ -3075,7 +3081,7 @@ export default AppDemonstration;
 //         buttonEntity.setAttribute("visible", "false");
 //       }
 //     }, 2500);
-    
+
 //     setCurrentDivision(event.target.value);
 //     setCurrentPhoneAssetIndex(0); // Reset the asset index
 //     setCurrentPhoneImageIndex(0); // Reset the image index
@@ -3126,4 +3132,3 @@ export default AppDemonstration;
 //   lastSkipTime,
 //   // handleTransition,loadNextAssets
 // ]);
-
