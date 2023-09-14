@@ -6,6 +6,7 @@ import { Entity, Scene } from "aframe-react";
 import "aframe-extras";
 import "./Panorama.css";
 import * as THREE from "three";
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { resetUserSession } from "./service/AuthService";
 import { useNavigate } from "react-router-dom";
 import "aframe-environment-component";
@@ -23,7 +24,7 @@ import { FaPlay } from "react-icons/fa";
 import { FaPause } from "react-icons/fa";
 import { FaVolumeUp } from "react-icons/fa";
 import { FaVolumeMute } from "react-icons/fa";
-import esy from "./SmartMerchantAssets/esy_new.glb";
+
 
 function Panorama({ src, birdSrc, globe, ellie }) {
   const cameraRef = useRef(null);
@@ -36,22 +37,21 @@ function Panorama({ src, birdSrc, globe, ellie }) {
   const videoContainerRef = useRef(null);
   const cameraContainerRef = useRef(null);
   const [mute, setMute] = useState(true);
-  const [mutedXt, setMutedXt] = useState(true);
+  const [mutedXt, setMutedXt] = useState(false);
   const [zoom, setZoom] = useState(1.5);
   const navigate = useNavigate();
-  const [isRotated, setIsRotated] = useState(false);
+  // const [isRotated, setIsRotated] = useState(false);
   const defaultRotationRef = useRef(null);
   const [playVideo, setPlayVideo] = useState(false);
   const [light, setLight] = useState(false);
-  const [playXtVideo, setPlayXtVideo] = useState(false);
+  const [playXtVideo, setPlayXtVideo] = useState(true);
 
   // let cameraRig; // Declare a global variable
 
   const handleZoom = (event) => {
-    const newZoom = zoom + event.deltaY * -0.008;
-    if (newZoom >= 1.5 && newZoom <= 5) {
+    const newZoom = zoom + event.deltaY * -0.01;
+    if (newZoom >= 1 && newZoom <= 5) {
       setZoom(newZoom);
-      setIsRotated(false);
     }
   };
   // const handleMouseMove = (event) => {
@@ -139,7 +139,19 @@ function Panorama({ src, birdSrc, globe, ellie }) {
     const muteBtn = muteBtnRef.current;
     const closeBtn = closeBtnRef.current;
     const cameraRig = document.getElementById("camerarig");
-    const camera = document.getElementById("primary-camera");
+  //   const camera = document.getElementById("primary-camera");
+  //   const renderer = new THREE.WebGLRenderer();
+  //   const controls = new OrbitControls(camera, renderer.domElement);
+  //   camera.position.set(0, 0, 5);
+  //  camera.lookAt(0, 0, 0);
+
+  // // Define the vertical rotation constraint in radians
+  //  const maxVerticalRotation = THREE.MathUtils.degToRad(90); // 90 degrees in radians
+  //  const minVerticalRotation = -maxVerticalRotation;
+
+  // // Set up camera controls with constraints
+  // controls.minPolarAngle = minVerticalRotation;
+  // controls.maxPolarAngle = maxVerticalRotation;
     const tvContainer = videoContainerRef.current;
     // const handleCameraZoom = () => {
 
@@ -203,7 +215,7 @@ function Panorama({ src, birdSrc, globe, ellie }) {
     closeBtn.addEventListener("click", handleClosebtnClicked);
     return () => {
       // tvZoomBtn.removeEventListener("click",handleCameraZoom)
-      setIsRotated(true);
+      
       tvZoomBtn.removeEventListener("click", handleVideoPlay);
       tvVideo.removeEventListener("ended", handleVideoEnd);
       playBtn.removeEventListener("click", handlePausePlayClick);
@@ -212,7 +224,7 @@ function Panorama({ src, birdSrc, globe, ellie }) {
       // // camera.setAttribute("camera","active",true)
       // cameraRig.object3D.lookAt(0, 0 ,0);
     };
-  }, [isRotated]);
+  });
 
   const handleMuteChange = () => {
     setMute(!mute);
@@ -372,15 +384,7 @@ function Panorama({ src, birdSrc, globe, ellie }) {
         <SmartgateHover />
         <PaymentGateHovered />
         <LobbyVideos playVideo={playVideo} />
-        <a-entity
-          gltf-model={esy}
-          id="esy"
-          position="-1 -6 -12"
-          scale="0.18 0.18 0.18"
-          rotation="0 1  0"
-          shadow="cast:true; receive:false;"
-          // animation-mixer="clip:;loop:repeat;repetitions:Infinity;"
-        />
+
         <a-entity id="ambient" light="type:ambient; intensity:0.2;"></a-entity>
         <a-entity
           id="directional"

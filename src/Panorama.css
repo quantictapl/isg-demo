@@ -48,8 +48,8 @@
 .videoContainer{
   position: absolute;
   background:transparent;
-  top:6%;
-  left:20%;
+  top:12%;
+  left:25%;
   /* z-index:200; */
   overflow:hidden;
 }
