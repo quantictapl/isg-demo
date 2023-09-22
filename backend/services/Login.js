@@ -14,6 +14,7 @@ async function login(user){
         return util.buildResponse(401,{
             message:"username and password are required",
         })
+        
     }
     const dynamoUser=await getUser(username);
     if(!dynamoUser || !dynamoUser.username){

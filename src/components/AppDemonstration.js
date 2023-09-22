@@ -3607,12 +3607,34 @@ function AppDemonstration() {
     //     audio.muted = false;
     //   }
     // };
+    if(video.paused){
+      esy.removeAttribute("animation-mixer");
+    }
     const handleVideoPlay = () => {
       // esy.setAttribute(
       //   "animation-mixer",
       //   "clip:;loop:repeat;repetitions:Infinity;"
       // );
-      console.log("esy animation nigga",esy.getAttribute("animation-mixer"))
+        if (currentDivision==="nullAssets" && currentPhoneAssetIndex===1  ) {
+          esyHand.setAttribute(
+            "animation-mixer",
+            // "clip:Animation;loop:once;repetitions:1;"
+            "clip:Animation;loop:once;repetitions:1;"
+          );
+        } 
+        if(currentDivision==="nullAssets1" && currentPhoneAssetIndex===1  ){
+          esyHand.setAttribute(
+            "animation-mixer",
+            // "clip:Animation;loop:once;repetitions:1;"
+            "clip:Animation;loop:once;repetitions:1;"
+          );
+        }else if((currentDivision!=="nullAssets" && currentPhoneAssetIndex!==1) || (currentDivision!=="nullAssets1" && currentPhoneAssetIndex!==1)) {
+          esy.setAttribute(
+            "animation-mixer",
+            "clip:;loop:repeat;repetitions:Infinity;"
+          );
+        }
+      }
       if (currentDivision==="nullAssets" && currentPhoneAssetIndex===1  ) {
         esyHand.setAttribute(
           "animation-mixer",
@@ -3631,7 +3653,7 @@ function AppDemonstration() {
           "animation-mixer",
           "clip:;loop:repeat;repetitions:Infinity;"
         );
-      }
+      
       if (!audio.paused && audio.currentTime < video.currentTime) {
         audio.currentTime = video.currentTime;
       } else if (!mute) {
@@ -4565,14 +4587,14 @@ function AppDemonstration() {
     <div id="dropdown-trigger" ref={dropDownTriggerRef} class="smart-dropdown" onClick={handleDropdownClick}>Select Demo</div>
       <div id="dropdown-options" ref={dropDownOptionsRef} class="dropdown-options">
         {/* <div class="dropdown-option" data-value="apploading">App Installation</div> */}
-        <div id="onboarding" ref={onboardingRef} class="dropdown-option" data-value="appintro">Onboarding</div>
+        <div id="onboarding" ref={onboardingRef} class="dropdown-option option-odd" data-value="appintro">Onboarding</div>
         {/* <div class="dropdown-option" data-value="userreg">User Registration</div> */}
-        <div id="payment-acceptance" ref={paymentAcceptanceRef} class="dropdown-option" data-value="paymentmethod">Payment Acceptance</div>
+        <div id="payment-acceptance" ref={paymentAcceptanceRef} class="dropdown-option option-even" data-value="paymentmethod">Payment Acceptance</div>
         {/* <div class="dropdown-option" data-value="rtpmethod">RTP</div> */}
-        <div id="dashboard" class="dropdown-option"  ref={dashboardRef} data-value="recpay">Dashboard</div>
+        <div id="dashboard" class="dropdown-option option-odd"  ref={dashboardRef} data-value="recpay">Dashboard</div>
         {/* <div class="dropdown-option" data-value="datahandling">Data Handling</div> */}
-        <div id="refund" class="dropdown-option" ref={refundRef} data-value="refundprocess">Refund</div>
-        <div id="smartmerchant" class="dropdown-option" data-value="refundprocess" onClick={handleSmartmerchantClick}>Back to ISG Pay Introduction</div>
+        <div id="refund" class="dropdown-option option-even" ref={refundRef} data-value="refundprocess">Refund</div>
+        <div id="smartmerchant" class="dropdown-option option-odd" data-value="refundprocess" onClick={handleSmartmerchantClick}>Smartmerchant Intro</div>
 
       </div>
      </div> 
@@ -4612,6 +4634,7 @@ function AppDemonstration() {
             controls={false}
             preload="auto"
             className="demo-subs"
+            // style={{display: "none"}}
           />
           <div className="next-button-container"></div>
         </div>
@@ -5296,7 +5319,7 @@ function AppDemonstration() {
           shadow="cast:true; receive:false;"
           // animation-mixer="clip:;loop:repeat;repetitions:Infinity;"
         /> */}
-        <a-entity
+        <a-entity lazy="true"
           gltf-model={esy}
           id="esy"
           ref={esyRef}
@@ -5306,7 +5329,7 @@ function AppDemonstration() {
           shadow="cast:true; receive:false;"
           // animation-mixer="clip:;loop:repeat;repetitions:Infinity;"
         />
-        <a-entity
+        <a-entity lazy="true"
           gltf-model={esyHand}
           id="esy"
           ref={esyhandRef}
@@ -5412,7 +5435,7 @@ function AppDemonstration() {
         ></a-entity>
 
         <a-light light="type: ambient"></a-light>
-        <button className="logout" onClick={logoutHandler}>
+        <button className=" app-demo-logout logout-position" onClick={logoutHandler}>
           Logout
         </button>
       </Scene>

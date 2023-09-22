@@ -39,28 +39,73 @@
   z-index:100;
 }
 .tv-video{
+  /* top:20%;
+  left:18%; */
+  position:relative;
   /* position:absolute; */
-  height:800px;
-  width:1024px;
+  height:55%;
+  width:65%;
   /* z-index:100; */
   
 }
 .videoContainer{
   position: absolute;
   background:transparent;
-  top:12%;
-  left:25%;
+  display:flex;
+  /* top:12%;
+  left:25%; */
+  height:100%;
+  width:100%;
   /* z-index:200; */
   overflow:hidden;
+  justify-content:center;
+  align-items:center;
 }
-.video-button-container{
+.video-whole-btn-container{
+  position: absolute;
+  background:transparent;
   display:flex;
- position:absolute;
- bottom:15.5%; 
- left:1%;
- align-items: center;
+  /* top:12%;
+  left:25%; */
+  height:100%;
+  width:100%;
+  /* z-index:200; */
+  overflow:hidden;
+  justify-content:center;
+  align-items:center;
+}
+.video-all-btn-container{
+  /* top:20%;
+  left:18%; */
+  position:relative;
+  /* position:absolute; */
+  height:55%;
+  width:65%;
+  display:flex;
+  justify-content:center;
+  align-items: center;
+
+}
+.video-btn-containers-container{
+  /* top:20%;
+  left:18%; */
+  position:relative;
+  /* position:absolute; */
+  height:95%;
+  width:90%;
+
+}
+
+.video-button-container{
+  position:absolute;
+  display:flex; 
+ /* margin-bottom:2%; */
+  /* margin-left:2rem; */
+  left:6rem;
+  bottom:2px;
+  align-items: center;
  justify-content:space-between;
- width:15%;
+ width:10em;
 }
 
 .video-btn{
@@ -74,8 +119,8 @@
 }
 .close-btn{
   position:absolute;
-  top:15%;
-  left:96%;
+  top:2px;
+  right:6rem;
   height:2rem;
   width:2rem;
   background:linear-gradient(to top,rgb(205, 205, 205),rgb(246, 246, 246));
@@ -127,4 +172,58 @@
 /* .icons:hover{
   color:white;
 } */
+
+@media screen and (max-width: 1300px) {
+  /* Styles for screens with a width of 600px or less */
+  .video-button-container{
+    position:absolute; 
+   /* margin-bottom:2%; */
+    /* margin-left:2rem; */
+    left:0.125rem;
+    bottom:2px;
+
+   width:10em;
+  }
+  .close-btn{
+    position:absolute;
+    top:2px;
+    right:0.125rem;
+
+  }
+}
+@media screen and (max-width: 1025px) {
+  /* Styles for screens with a width of 600px or less */
+  .video-button-container{
+    position:absolute; 
+   /* margin-bottom:2%; */
+    /* margin-left:2rem; */
+    left:12px;
+    bottom:2px;
+    height:1.5rem;
+    width:1.5rem;
+   width:10em;
+  }
+  .close-btn{
+    position:absolute;
+    top:2px;
+    right:12px;
+    height:1rem;
+    width:1rem;
+  }
+  /* .icons{
+    height:0.75rem;
+    width:0.75rem;
+  }
+  .playpause-btn{
+    border-radius:50%;
+    border:2px solid rgb(154, 145, 176);
+  }
+  .mute-btn{
+    height:1.5rem;
+    width:4rem;
+    border:2px solid rgb(154, 145, 176);
+    border-radius:4px;
+    justify-content: space-between;
+  } */
+}
 

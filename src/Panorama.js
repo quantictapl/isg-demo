@@ -6,7 +6,7 @@ import { Entity, Scene } from "aframe-react";
 import "aframe-extras";
 import "./Panorama.css";
 import * as THREE from "three";
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { resetUserSession } from "./service/AuthService";
 import { useNavigate } from "react-router-dom";
 import "aframe-environment-component";
@@ -25,7 +25,6 @@ import { FaPause } from "react-icons/fa";
 import { FaVolumeUp } from "react-icons/fa";
 import { FaVolumeMute } from "react-icons/fa";
 
-
 function Panorama({ src, birdSrc, globe, ellie }) {
   const cameraRef = useRef(null);
   const sceneRef = useRef(null);
@@ -35,6 +34,7 @@ function Panorama({ src, birdSrc, globe, ellie }) {
   const muteBtnRef = useRef(null);
   const closeBtnRef = useRef(null);
   const videoContainerRef = useRef(null);
+  const videoBtnContainerRef = useRef(null);
   const cameraContainerRef = useRef(null);
   const [mute, setMute] = useState(true);
   const [mutedXt, setMutedXt] = useState(false);
@@ -122,7 +122,7 @@ function Panorama({ src, birdSrc, globe, ellie }) {
     // cameraRig.object3D.position.x = THREE.MathUtils.degToRad(0);
     // cameraRig.object3D.position.y = THREE.MathUtils.degToRad(0);
     // cameraRig.object3D.position.z = THREE.MathUtils.degToRad(0);
-    cameraRig.setAttribute("rotation","0 -45 0");
+    cameraRig.setAttribute("rotation", "0 -45 0");
     // const smartgate=document.getElementById("smartgate");
     // smartgate.addEventListener('mouseenter', function() {
     //   alert('mouseenter');
@@ -139,20 +139,21 @@ function Panorama({ src, birdSrc, globe, ellie }) {
     const muteBtn = muteBtnRef.current;
     const closeBtn = closeBtnRef.current;
     const cameraRig = document.getElementById("camerarig");
-  //   const camera = document.getElementById("primary-camera");
-  //   const renderer = new THREE.WebGLRenderer();
-  //   const controls = new OrbitControls(camera, renderer.domElement);
-  //   camera.position.set(0, 0, 5);
-  //  camera.lookAt(0, 0, 0);
+    //   const camera = document.getElementById("primary-camera");
+    //   const renderer = new THREE.WebGLRenderer();
+    //   const controls = new OrbitControls(camera, renderer.domElement);
+    //   camera.position.set(0, 0, 5);
+    //  camera.lookAt(0, 0, 0);
 
-  // // Define the vertical rotation constraint in radians
-  //  const maxVerticalRotation = THREE.MathUtils.degToRad(90); // 90 degrees in radians
-  //  const minVerticalRotation = -maxVerticalRotation;
+    // // Define the vertical rotation constraint in radians
+    //  const maxVerticalRotation = THREE.MathUtils.degToRad(90); // 90 degrees in radians
+    //  const minVerticalRotation = -maxVerticalRotation;
 
-  // // Set up camera controls with constraints
-  // controls.minPolarAngle = minVerticalRotation;
-  // controls.maxPolarAngle = maxVerticalRotation;
+    // // Set up camera controls with constraints
+    // controls.minPolarAngle = minVerticalRotation;
+    // controls.maxPolarAngle = maxVerticalRotation;
     const tvContainer = videoContainerRef.current;
+    const videoBtnContainer = videoBtnContainerRef.current;
     // const handleCameraZoom = () => {
 
     //   setZoom(prevZoom => (prevZoom >= 1.5 ? 5 : 1.5));
@@ -175,8 +176,10 @@ function Panorama({ src, birdSrc, globe, ellie }) {
     // };
     // tvZoomBtn.addEventListener("click",handleCameraZoom)
     const handleVideoPlay = () => {
+      tvVideo.currentTime = 0.0000;
       tvVideo.play();
       tvContainer.setAttribute("style", "z-index:200");
+      videoBtnContainer.setAttribute("style", "z-index:200");
       tvVideo.muted = false;
     };
     const handlePausePlayClick = () => {
@@ -190,6 +193,7 @@ function Panorama({ src, birdSrc, globe, ellie }) {
     };
     const handleVideoEnd = () => {
       tvContainer.setAttribute("style", "z-index:0");
+      videoBtnContainer.setAttribute("style", "z-index:0");
       tvVideo.muted = true;
       // tvVideo.paused=true;
     };
@@ -204,9 +208,10 @@ function Panorama({ src, birdSrc, globe, ellie }) {
     };
     const handleClosebtnClicked = () => {
       // tvVideo.ended();
-      tvVideo.currentTime = 0.0;
+      tvVideo.currentTime = 0.0000;
       tvVideo.muted = true;
       tvContainer.setAttribute("style", "z-index:0");
+      videoBtnContainer.setAttribute("style", "z-index:0");
     };
     tvZoomBtn.addEventListener("click", handleVideoPlay);
     tvVideo.addEventListener("ended", handleVideoEnd);
@@ -215,7 +220,7 @@ function Panorama({ src, birdSrc, globe, ellie }) {
     closeBtn.addEventListener("click", handleClosebtnClicked);
     return () => {
       // tvZoomBtn.removeEventListener("click",handleCameraZoom)
-      
+
       tvZoomBtn.removeEventListener("click", handleVideoPlay);
       tvVideo.removeEventListener("ended", handleVideoEnd);
       playBtn.removeEventListener("click", handlePausePlayClick);
@@ -247,32 +252,39 @@ function Panorama({ src, birdSrc, globe, ellie }) {
           controls={false}
           preload="auto"
           className="tv-video"
-        />
-        <div className="video-button-container">
-          <button className="video-btn playpause-btn" ref={playBtnRef}>
-            {playXtVideo ? (
-              <FaPause className="icons" />
-            ) : (
-              <FaPlay className="icons" />
-            )}
-          </button>
-          <button className="video-btn mute-btn" ref={muteBtnRef}>
-            {mutedXt ? (
-              <>
-                <FaVolumeMute className="icons playpause-icon" />
-                <span className="mute-span">Mute</span>
-              </>
-            ) : (
-              <>
-                <FaVolumeUp className="icons playpause-icon" />
-                <span className="mute-span">Unmute</span>
-              </>
-            )}
-          </button>
+        ></video>
+      </div>
+      <div className="video-whole-btn-container" ref={videoBtnContainerRef}>
+        <div className="video-all-btn-container">
+          <div className="video-btn-containers-container">
+            <div className="video-button-container">
+              <button className="video-btn playpause-btn" ref={playBtnRef}>
+                {playXtVideo ? (
+                  <FaPause className="icons" />
+                ) : (
+                  <FaPlay className="icons" />
+                )}
+              </button>
+              <button className="video-btn mute-btn" ref={muteBtnRef}>
+                {mutedXt ? (
+                  <>
+                    <FaVolumeMute className="icons playpause-icon" />
+                    <span className="mute-span">Mute</span>
+                  </>
+                ) : (
+                  <>
+                    <FaVolumeUp className="icons playpause-icon" />
+                    <span className="mute-span">Unmute</span>
+                  </>
+                )}
+              </button>
+            </div>
+
+            <button className="video-btn close-btn" ref={closeBtnRef}>
+              <MdClose className="icons" />
+            </button>
+          </div>
         </div>
-        <button className="video-btn close-btn" ref={closeBtnRef}>
-          <MdClose className="icons" />
-        </button>
       </div>
 
       {/* <video
@@ -384,7 +396,6 @@ function Panorama({ src, birdSrc, globe, ellie }) {
         <SmartgateHover />
         <PaymentGateHovered />
         <LobbyVideos playVideo={playVideo} />
-
         <a-entity id="ambient" light="type:ambient; intensity:0.2;"></a-entity>
         <a-entity
           id="directional"
