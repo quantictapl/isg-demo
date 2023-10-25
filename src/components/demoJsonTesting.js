@@ -139,20 +139,21 @@ import appHandCardSingle from "../SmartMerchantAssets/paymentmethod/app_hand_car
 import recpayimg1 from "../SmartMerchantAssets/recordpayment/recpayImg1.png";
 import recpayimg2 from "../SmartMerchantAssets/recordpayment/recpayImg2.png";
 import recpayimg3 from "../SmartMerchantAssets/recordpayment/recpayImg3.png";
-import recpayVidIn1 from "../SmartMerchantAssets/recordpayment/recpayIn1.mp4"
-import recpayVidIn2 from "../SmartMerchantAssets/recordpayment/recpayIn2.mp4"
-import recpayVidIn3 from "../SmartMerchantAssets/recordpayment/recpayIn3.mp4"
+import recpayVidIn1 from "../SmartMerchantAssets/recordpayment/recpayIn1.mp4";
+import recpayVidIn2 from "../SmartMerchantAssets/recordpayment/recpayIn2.mp4";
+import recpayVidIn3 from "../SmartMerchantAssets/recordpayment/recpayIn3.mp4";
+import blankAudio from "../SmartMerchantAssets/videos/Dialogs/blank.mp4";
 
 export  const assetJson = {
     apploading: {
       phoneImages: [
         {
           name: "appimg1",
-          imagePath: qrcode,
+          imagePath: "",
           buttonPosition: { x: 0.1, y: 0.088 },
           width: 3.8,
           height: 3.8,
-          scale:{x: 0.13, y: 0.13, z: 0.13},
+          scale:{x: 0, y: 0, z: 0},
           position: { x: 0.00396, y: -0.01997, z: -0.96379 },
           rotation: {
             x: 2.8447354528245374,
@@ -165,6 +166,12 @@ export  const assetJson = {
             position: { x: 0, y: 0, z: -10 },
             rotation: { x: 0, y: 0, z: 0 },
           },
+          subtitles:[
+            { "start": 0, "end": 4, "text": "Subtitle 1" },
+            { "start": 4, "end": 7, "text": "Subtitle 2" },
+            { "start": 7, "end": 14, "text": "Subtitle 3" },
+            { "start": 14, "end": 17, "text": "Subtitle 4" },
+          ],
         },
         {
           name: "appimg2",
@@ -560,7 +567,7 @@ export  const assetJson = {
           },
           subsVideo: {
             videoElement: appIntro1Dialog,
-            audio: appIntro1Audio,
+            audio: blankAudio,
           },
         },
         {
@@ -587,7 +594,7 @@ export  const assetJson = {
           },
           subsVideo: {
             videoElement: appIntro1Dialog,
-            audio: appIntro1Audio,
+            audio: rtpimg1,
           },
         },
         {
@@ -614,7 +621,7 @@ export  const assetJson = {
           },
           subsVideo: {
             videoElement: appIntro1Dialog,
-            audio: appIntro1Audio,
+            audio: rtpimg1,
           },
         },
         {

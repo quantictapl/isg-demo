@@ -14,6 +14,7 @@ function Intro() {
     videoRef.current.pause();
     navigate("/panorama");
   };
+  localStorage.setItem('lastVisitedPage', window.location.href);
   return (
     <div> 
         <video controls={false} muted autoPlay={true} preload="auto"  className="videos" onEnded={handleVideoEnd}  ref={videoRef}>

@@ -3496,7 +3496,7 @@ function AppDemonstration() {
   const recPayVid3Ref=useRef(null);
   const previousBtnRef=useRef(null);
   const esyhandRef=useRef(null)
-
+  localStorage.setItem('lastVisitedPage', window.location.href);
   useEffect(() => {
     // Simulating page load after 3 seconds
     const timer = setTimeout(() => {

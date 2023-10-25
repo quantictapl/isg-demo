@@ -23,7 +23,7 @@ function Opening() {
     resetUserSession();
     navigate("/");
   };
-
+  localStorage.setItem('lastVisitedPage', window.location.href);
   return (
     <div className="opening-container">
       <video

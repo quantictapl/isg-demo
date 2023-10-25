@@ -9,7 +9,7 @@
     justify-content: center;
     
 }
-.demo-subs-main-container{
+.demo-subs-main-container-smart-intro{
   display: flex;
   align-items: center;
   justify-content:center;
@@ -19,6 +19,9 @@
     width: 80vw;
     height: 10vh;
     object-fit:cover;   
+}
+.demo-subs-sm{
+  margin-left: 4rem;
 }
 .subs-audio{
   visibility: hidden;
@@ -109,3 +112,21 @@
   .next-video-btn:hover{
     background-color:rgb(213, 25, 24);
   }
+
+  @media screen and (max-width: 1537px) and (min-width : 1280px) {
+    .smart-icon{
+      height:15px;
+      width:15px;
+    } 
+    .smartm-dropdown-title{
+      font-size: 0.8rem;
+      margin-top:0.8rem;
+    }
+  }
+
+  /* @media screen and (max-width: 1537px) and (min-width : 1280px) {
+    .smartm-dropdown-title{
+      margin-top:0.8rem;
+    } 
+  } */
+  

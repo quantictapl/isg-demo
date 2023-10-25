@@ -33,7 +33,7 @@ AFRAME.registerComponent('camera-initial-rotation', {
             self.el.setAttribute("look-controls","reverseMouseDrag:true");
             //self.el.components['look-controls'].pitchObject.rotation.set(THREE.MathUtils.degToRad(self.el.pitchObject),0,0);
             // self.el.components['look-controls'].yawObject.rotation.set(0,THREE.MathUtils.degToRad(self.el.yawObject),0);
-          },500)
+          },500);
           //self.el.components['look-controls'].pitchObject.rotation.set(THREE.MathUtils.degToRad(self.el.pitchObject),0,0);
           //self.el.components['look-controls'].yawObject.rotation.set(0,THREE.MathUtils.degToRad(self.el.yawObject),0);
           

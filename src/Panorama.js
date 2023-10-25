@@ -13,19 +13,23 @@ import "aframe-environment-component";
 import "aframe-event-set-component";
 import HideVRButton from "./components/HideVRButton";
 import "aframe-ui-components";
-import "aframe-inspector";
+// import "aframe-inspector";
 import SmartgateHover from "./LobbyEntitiy/smartgateHover";
 import PaymentGateHovered from "./LobbyEntitiy/paymentgateHovered";
 import LobbyVideos from "./LobbyEntitiy/LobbyVideo";
 import "aframe-look-at-component";
-import tvVideo from "./videos/AboutUs.mp4";
+// import tvVideo from "./videos/AboutUs.mp4";
 import { MdClose } from "react-icons/md";
 import { FaPlay } from "react-icons/fa";
 import { FaPause } from "react-icons/fa";
 import { FaVolumeUp } from "react-icons/fa";
 import { FaVolumeMute } from "react-icons/fa";
+import CustomLoadingScreen from "./components/CustomLoadingScreen";
+import "./components/Customloading"
 
-function Panorama({ src, birdSrc, globe, ellie }) {
+function Panorama({ lobbyBg, globe, ellie,tv }) {
+  const tvVid=tv;
+  console.log(tv);
   const cameraRef = useRef(null);
   const sceneRef = useRef(null);
   const tvZoomRef = useRef(null);
@@ -41,6 +45,7 @@ function Panorama({ src, birdSrc, globe, ellie }) {
   const [zoom, setZoom] = useState(1.5);
   const navigate = useNavigate();
   // const [isRotated, setIsRotated] = useState(false);
+  const [isSceneLoaded,setIsSceneLoaded]=useState(false);
   const defaultRotationRef = useRef(null);
   const [playVideo, setPlayVideo] = useState(false);
   const [light, setLight] = useState(false);
@@ -54,6 +59,13 @@ function Panorama({ src, birdSrc, globe, ellie }) {
       setZoom(newZoom);
     }
   };
+  useEffect(()=>{
+    const scene=document.getElementById("scene");
+    const sceneLoaded=()=> {
+        setIsSceneLoaded(true);
+    }
+    scene.addEventListener("loaded",sceneLoaded)
+  },[])
   // const handleMouseMove = (event) => {
   //   // Update cursor position based on mouse coordinates
   //   setCursorPosition({ x: event.clientX, y: event.clientY});
@@ -237,7 +249,7 @@ function Panorama({ src, birdSrc, globe, ellie }) {
 
   const rotation1 = " 0 10 0";
   const defaultRotation = "0 -45 0";
-
+  localStorage.setItem('lastVisitedPage',"/panorama");
   return (
     <div className="scene-container">
       <HideVRButton />
@@ -245,7 +257,7 @@ function Panorama({ src, birdSrc, globe, ellie }) {
         <video
           id="subsVideo"
           ref={tvVideoRef}
-          src={tvVideo}
+          src={tvVid}
           // onLoadedMetadata={handleLoadedMetadata}
           type="video/webm"
           muted
@@ -254,7 +266,7 @@ function Panorama({ src, birdSrc, globe, ellie }) {
           className="tv-video"
         ></video>
       </div>
-      <div className="video-whole-btn-container" ref={videoBtnContainerRef}>
+      <div className="video-whole-btn-container" ref={videoBtnContainerRef} style={{display: isSceneLoaded ? "flex": "none"}}>
         <div className="video-all-btn-container">
           <div className="video-btn-containers-container">
             <div className="video-button-container">
@@ -299,20 +311,22 @@ function Panorama({ src, birdSrc, globe, ellie }) {
             className="tv-video"
           /> */}
       {/* <button className="video-play-button" onClick={handlePlayAllVideoBtnClick}>Play all videos</button>  */}
+      {!isSceneLoaded && <CustomLoadingScreen />}
       <Scene
-        light="defaultLightsEnabled: false"
         // inspector="url: https://cdn.jsdelivr.net/gh/aframevr/aframe@d52af46565230a33c0fa23e045fb74e877df7dc9/dist/aframe-master.min.js"
-        // cursor="rayOrigin: mouse"
         cursor__mouse="rayOrigin: mouse"
-        // raycaster="objects: [gui-interactable]; far: 100"
+        // raycaster="objects: [data-clickable]; far: 100"
         onWheel={handleZoom}
         wasd-controls="false"
         className="scene"
+        id="scene"
+        custom-loading
         ref={sceneRef}
         vr-mode-ui={{ enabled: true }}
         onEnterVR={handleEnterVR}
+        loading-screen="enabled:false;" 
         renderer={
-          "antialias: true; physicallyCorrectLights: true; " //shadow:true property was here
+          "antialias: true; physicallyCorrectLights: true; "
         }
         embedded={true}
       >
@@ -395,7 +409,7 @@ function Panorama({ src, birdSrc, globe, ellie }) {
         ></a-entity>
         <SmartgateHover />
         <PaymentGateHovered />
-        <LobbyVideos playVideo={playVideo} />
+        <LobbyVideos playVideo={playVideo} tvVid={tv} />
         <a-entity id="ambient" light="type:ambient; intensity:0.2;"></a-entity>
         <a-entity
           id="directional"
@@ -407,23 +421,23 @@ function Panorama({ src, birdSrc, globe, ellie }) {
           position="-57.4524 47.48264 -53.42823"
           rotation="-13.094950407714965 -155.69898899562068 50.07651129443395"
         ></a-entity>{" "}
-        intensity:400
+
         <a-entity
           id="spot2"
           light="type: spot; castShadow: true;  intensity: 2.5; distance: 2000; color: white; penumbra: 1"
           position="75.18762 14.52602 -44.88032"
           rotation="10.988184595018929 136.346766507282 163.62184938668972"
         ></a-entity>{" "}
-        intensity:800
+
         <a-entity
           id="spot3"
           light="type: spot; castShadow: true;  intensity: 1.5; distance: 400; color: white; decay: 1.01; penumbra: 0.63; shadowBias: 0.57"
           position="-57.44097 32.16745 84.66318"
           rotation="-5.005359298262872 -46.50240056840788 41.34119674986942"
         ></a-entity>{" "}
-        intensity:400
+
         <a-light light="type: ambient"></a-light>
-        <Entity primitive="a-sky" src={src} rotation="0 -130 0" />
+        <Entity primitive="a-sky" src="#lobby-bg" rotation="0 -130 0" />
         <a-sky color="#ECECEC" scale="3 3 3"></a-sky>
         <Entity primitive="a-sky" color="#ECECEC" scale="3 3 3" />
         <a-entity
@@ -442,14 +456,14 @@ function Panorama({ src, birdSrc, globe, ellie }) {
             onClick={handleButtonClick}
           ></a-button>
         </a-entity>
-        <button className="logout" onClick={logoutHandler}>
+        <button className="logout" onClick={logoutHandler} style={{display: isSceneLoaded ? "flex": "none"}}>
           Logout
         </button>
         <a-assets>
-          <a-asset-item id="bird" response-type="arraybuffer" src={birdSrc} />
           <a-asset-item id="globe" response-type="arraybuffer" src={globe} />
+          <img crossorigin="anonymous" id="lobby-bg" src={lobbyBg} alt=""/>
         </a-assets>
-        <a-entity
+        {/* <a-entity
           className="girl"
           gltf-model={ellie}
           scale="1.2 1.2 1.2"
@@ -457,7 +471,7 @@ function Panorama({ src, birdSrc, globe, ellie }) {
           rotation="0 180 0"
           animation-mixer="clip:Armature|mixamo.com|Layer0; loop:repeat;  repetitions: Infinity;"
           // shadow="cast:true;"
-        ></a-entity>
+        ></a-entity> */}
         <a-entity
           id="globe"
           gltf-model={globe}

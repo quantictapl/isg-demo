@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import Panorama from './Panorama';
-import rough from './RoughLobby.webp'
-import model from './Test2.gltf'
-import bird from './BirdNew.glb';
+import Panorama from './Panorama1';
+// import rough from './Lobby.webp'
+// import model from './Test2.gltf'
 import isgloading from "./videos/isgloading.webm"
-import globe from './globeuu.glb'
-import ellie from "./Ellie.glb"
-import store from "./SmartMerchantAssets/Store.glb"
+// import globe from './globeuu.glb'
+// import ellie from "./Ellie.glb"
 
-function PanoramaViewer() {
+
+function PanoramaViewer({models,videos,images}) {
   const [loading,setLoading]=useState(true);
+  const globe=models.Model1;
+  const tv=videos.Video1;
+  localStorage.setItem('lastVisitedPage', "/panorama");
   // const rough="https://isg-assets.s3.ap-south-1.amazonaws.com/RoughLobby.jpg";
   // const globe="https://isg-assets.s3.ap-south-1.amazonaws.com/globeuu.glb";
   useEffect(() => {
@@ -41,12 +43,11 @@ function PanoramaViewer() {
   return (
     <div>
       
-      <Panorama src={rough}
-      modelSrc={model}
-      birdSrc={bird}
+      <Panorama lobbyBg={images.Image1}
+      // modelSrc={model}
       globe={globe}
-      store={store}
-      ellie={ellie} />
+      // ellie={ellie} 
+      tv={tv} />
     </div>
   );
 }

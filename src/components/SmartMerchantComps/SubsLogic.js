@@ -37,7 +37,7 @@ function SubsLogic({
   videoEnded,
   cameraRotationEnded,
   isTVVideoEnded,
-  onTVvideoShouldPlay
+  onTVvideoShouldPlay,
 }) {
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const [showPlayButton, setShowPlayButton] = useState(false);
@@ -45,9 +45,61 @@ function SubsLogic({
   const audioRef = useRef(null);
   const transparentVideoRef = useRef(null);
   const [ispreviousBtnDisabled, setIspreviousBtnDisabled] = useState(false);
+  const dropDownTriggerRef=useRef(null);
+  const dropDownOptionsRef=useRef(null);
+  const marketRef=useRef(null);
+  const benifitseRef=useRef(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(true)
 
   // const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   // onTVVideoPlay();
+  const handleDropdownClick = () => {
+    
+    setIsDropdownOpen((prevState) => !prevState);
+    if (isDropdownOpen) {
+      dropDownOptionsRef.current.classList.add("active");
+      
+    } else {
+      dropDownOptionsRef.current.classList.remove("active");
+    }
+  };
+  
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        !dropDownTriggerRef.current.contains(event.target) &&
+        !dropDownOptionsRef.current.contains(event.target)
+      ) {
+        setIsDropdownOpen(true);
+        dropDownOptionsRef.current.classList.remove("active");
+      }
+    };
+  
+    document.addEventListener("click", handleClickOutside);
+  
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+
+    const marketOption = marketRef.current;
+    const benifitsOption = benifitseRef.current;
+
+  
+    // Remove existing classNames
+    marketOption.classList.remove('dropdown-current');
+    benifitsOption.classList.remove('dropdown-current');
+
+  
+    // Check the currentDivisionIndex and add classNames accordingly
+    if (currentVideoIndex===1) {
+      marketOption.classList.add('dropdown-current');
+    } else if (currentVideoIndex===2) {
+      benifitsOption.classList.add('dropdown-current');
+    }
+  }, [currentVideoIndex]);
   const navigate = useNavigate();
   const handleSkipClick = () => {
     onSkipClick(); // Call the skip callback function from the parent
@@ -121,8 +173,33 @@ function SubsLogic({
     //   onTVVideoPlay();
     // }
   },[currentVideoIndex, isTVVideoEnded, navigate, onNextVideoClick, onSkipClick])
+  // const handleSmartDropDown = (event) => {
+  //   const selectedValue = event.target.value;
+  //   switch (selectedValue) {
+  //     case "market":
+  //       onSkipClick(); // Call the skip callback function from the parent
+  //       setVideoVisible(false);
+  //       setShowPlayButton(false);
+  //       setCurrentVideoIndex(1);
+  //       onNextVideoClick(0); // Call the callback function with the next video index
+  //       break;
+  //     case "benifits":
+  //       onSkipClick(); // Call the skip callback function from the parent
+  //       setVideoVisible(false);
+  //       setShowPlayButton(false);
+  //       setCurrentVideoIndex(2); //next Subs video
+  //       onNextVideoClick(1);// next Tv Video
+  //       break;
+  //     case "appdemo":
+  //       navigate("/smartmerchant/appdemo")
+  //       break;
+  //     default:
+  //       // Handle default case or do nothing
+  //       break;
+  //   }
+  // };
   const handleSmartDropDown = (event) => {
-    const selectedValue = event.target.value;
+    const selectedValue = event.target.getAttribute("data-value");
     switch (selectedValue) {
       case "market":
         onSkipClick(); // Call the skip callback function from the parent
@@ -176,7 +253,7 @@ useEffect(()=>{
         setShowPlayButton(true);
         onTVvideoShouldPlay();  //tvVideo should play right after the subsVideo(transparentVideo) ends
         //  videoEnded();
-        console.log("more than 1")
+        console.log("more than 1");
       }
     };
   
@@ -218,6 +295,33 @@ useEffect(()=>{
       audioElement.pause();
       audioElement.currentTime = 0;
     }
+    // if (typeof document.hidden !== "undefined") {
+    //   // Add a visibility change event listener
+    //   document.addEventListener("visibilitychange", handleVisibilityChange);
+    // }
+    
+    // // Function to handle visibility change
+    // function handleVisibilityChange() {
+    //   if (document.hidden) {
+    //     // The page is now hidden (user switched to a different tab or window)
+    //     pauseExecution();
+    //   } else {
+    //     // The page is now visible again    
+    //     resumeExecution();
+    //   }
+    // }
+    
+    // // Function to pause your code execution
+    // function pauseExecution() {
+    //   transparentVideoElement.pause();
+    //   audioElement.pause();
+    // }
+    
+    // // Function to resume your code execution
+    // function resumeExecution() {
+    //   transparentVideoElement.play();
+    //   audioElement.play();
+    // }
 
     return () => {
       audioElement.pause();
@@ -244,18 +348,70 @@ useEffect(()=>{
   // console.log(videoEnded);
   console.log("tvVideo ended is",isTVVideoEnded);
  
-  return (<>
-    <select defaultValue="" className="smart-dropdown" id="smart-app-dropdown" onChange={handleSmartDropDown}>
-    <option value="none" disabled>Select Demo</option>
-    <option value="market">Merchant Payments</option>
-    <option value="benifits">ISG Benefits</option>
-    <option value="appdemo">App Demonstration</option>
-  
-  </select>
-    <div className="demo-subs-container">
-      {/* <button onClick={handlePreviousClick} className="next-video-btn" disabled={ispreviousBtnDisabled}>Next</button> */}
-      <div className="demo-subs-main-container">
-      <video id="subsVideo"
+  return (
+    <>
+      {/* <select
+        defaultValue=""
+        className="smart-dropdown"
+        id="smart-app-dropdown"
+        onChange={handleSmartDropDown}
+      >
+        <option value="none" disabled>
+          Select Demo
+        </option>
+        <option value="market">Merchant Payments</option>
+        <option value="benifits">ISG Benefits</option>
+        <option value="appdemo">App Demonstration</option>
+        
+      </select> */}
+      <div class="smart-dropdown">
+          <div
+            id="dropdown-trigger"
+            ref={dropDownTriggerRef}
+            class="smart-dropdown"
+            onClick={handleDropdownClick}
+          >
+            <span className="smart-dropdown-title">Select Demo</span>
+          </div>
+          <div
+            id="dropdown-options"
+            ref={dropDownOptionsRef}
+            class="dropdown-options"
+            
+          >
+            <div
+              id="market"
+              ref={marketRef}
+              class="dropdown-option option-odd"
+              data-value="market"
+              onClick={handleSmartDropDown}
+            >
+              Merchant Payment
+            </div>
+            <div
+              id="benifits"
+              ref={benifitseRef}
+              class="dropdown-option option-even"
+              data-value="benifits"
+              onClick={handleSmartDropDown}
+            >
+              ISG Benefits
+            </div>
+            <div
+              id="smartmerchant"
+              class="dropdown-option option-odd"
+              data-value="appdemo"
+              onClick={handleSmartDropDown}
+            >
+              App Demonstration
+            </div>
+          </div>
+        </div>
+      <div className="demo-subs-container">
+        {/* <button onClick={handlePreviousClick} className="next-video-btn" disabled={ispreviousBtnDisabled}>Next</button> */}
+        <div className="demo-subs-main-container-smart-intro">
+          <video
+            id="subsVideo"
             ref={transparentVideoRef}
             src={subtitleVideos[currentVideoIndex].videoSrc}
             type="video/webm"
@@ -270,54 +426,57 @@ useEffect(()=>{
               transition: "opacity 0.5s, transform 0.5s",
             }}
           />
-        <div className="next-button-container">
-          {showPlayButton  && (
-            <div>
-              <button className="subs-button" onClick={onPlayPauseClick}>
-                {isPlaying ? (
-                  <>
-                     <FaPause className="smart-icon" />
-                     <span>Pause</span>
-                  </>
-                ) : (
-                  <>
-                     <FaPlay className="smart-icon" />
-                     <span>Play</span>
-                  </>
-                )}
-              </button>
-              <button onClick={handlePreviousClick} className="subs-button skip" 
-              disabled={ispreviousBtnDisabled}
-              style={{ display: ispreviousBtnDisabled ? "none" : "flex" }} >
-              <div className="button-interior">
-                  <>
-                  <BsFillSkipBackwardFill className="smart-icon previous-icon" />
-                  <span>Prev</span>
-                  </>
-                </div>
-              </button>
-              <button className="subs-button skip" onClick={handleSkipClick}>
-                <div className="button-interior">
-                  <>
-                  <BsFillSkipForwardFill className="smart-icon skip-icon" />
-                  <span>Skip</span>
-                  </>
-                </div>
-              </button>
-            </div>
-          )}
+          <div className="next-button-container">
+            {showPlayButton && (
+              <div>
+                <button className="subs-button" onClick={onPlayPauseClick}>
+                  {isPlaying ? (
+                    <>
+                      <FaPause className="smart-icon" />
+                      <span>Pause</span>
+                    </>
+                  ) : (
+                    <>
+                      <FaPlay className="smart-icon" />
+                      <span>Play</span>
+                    </>
+                  )}
+                </button>
+                <button
+                  onClick={handlePreviousClick}
+                  className="subs-button skip"
+                  disabled={ispreviousBtnDisabled}
+                  style={{ display: ispreviousBtnDisabled ? "none" : "flex" }}
+                >
+                  <div className="button-interior">
+                    <>
+                      <BsFillSkipBackwardFill className="smart-icon previous-icon" />
+                      <span>Prev</span>
+                    </>
+                  </div>
+                </button>
+                <button className="subs-button skip" onClick={handleSkipClick}>
+                  <div className="button-interior">
+                    <>
+                      <BsFillSkipForwardFill className="smart-icon skip-icon" />
+                      <span>Skip</span>
+                    </>
+                  </div>
+                </button>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
 
-      <video 
-        ref={audioRef}
-        src={subtitleVideos[currentVideoIndex].audioSrc}
-        type="video/webm"
-        controls={false}
-        preload="auto"
-        className="demo-subs subs-audio"
-      />      
-    </div>
+        <video
+          ref={audioRef}
+          src={subtitleVideos[currentVideoIndex].audioSrc}
+          type="video/webm"
+          controls={false}
+          preload="auto"
+          className="demo-subs subs-audio"
+        />
+      </div>
     </>
   );
 }

@@ -5,11 +5,11 @@ import  {getToken} from '../service/AuthService';
 
 
 
-function PrivateRoute({ component: Compontent,authenticated }) {
+function PrivateRoute({ component: Compontent,authenticated,models,videos,images }) {
     console.log(authenticated)
 
 
-  return authenticated ? <Compontent/> : <Navigate to="/login" />
+  return authenticated ? <Compontent models={models} videos={videos} images={images}/> : <Navigate to="/login" />
 
 }
 

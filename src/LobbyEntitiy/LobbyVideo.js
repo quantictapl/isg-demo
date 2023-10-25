@@ -6,21 +6,30 @@ import * as THREE from 'three';
 import "aframe-environment-component";
 import "aframe-event-set-component";
 import "aframe-ui-components";
-import wallbrand from "../videos/wallbrand.mp4";
-import frontwall from "../videos/frontdoorwall.mp4";
-import tv from "../videos/AboutUs.mp4";
-import wifi from "../videos/wifi.mp4";
-import btn from "../videos/circle.mp4";
 import { useNavigate } from "react-router-dom";
+// import wallbrand from "../videos/wallbrand.mp4";
+// import frontwall from "../videos/frontdoorwall.mp4";
+// import tv from "../videos/AboutUs.mp4";
+// import wifi from "../videos/wifi.mp4";
+// import btn from "../videos/circle.mp4";
 import muteBtn from "../images/mute.png";
 import volumeBtn from "../images/volume.png"
 import isgloading from "../videos/isgloading.webm"
 
-function LobbyVideos(playVideo) {
+
+
+function LobbyVideos({playVideo,tvVid}) {
     const navigate = useNavigate();
     const [mute,setMute]=useState(true)
-    // const wallbrand="https://isg-assets.s3.ap-south-1.amazonaws.com/videos/wallbrand.mp4";
+    const wallbrand="https://isg-assets.s3.ap-south-1.amazonaws.com/videos/wallbrand.mp4";
     // const tv="https://isg-assets.s3.ap-south-1.amazonaws.com/videos/AboutUs.mp4";
+    const wifi="https://isg-assets.s3.ap-south-1.amazonaws.com/videos/wifi.mp4";
+    const frontwall="https://isg-assets.s3.ap-south-1.amazonaws.com/videos/frontdoorwall.mp4"; 
+    const btn="https://isg-assets.s3.ap-south-1.amazonaws.com/videos/circle.mp4";
+    // const muteBtn="https://isg-assets.s3.ap-south-1.amazonaws.com/images/mute.png";
+    // const volumeBtn="https://isg-assets.s3.ap-south-1.amazonaws.com/images/volume.png";
+
+
     const handleMerchantClick = (event) => {
         event.stopPropagation();
         navigate("/smartmerchant");
@@ -42,7 +51,6 @@ function LobbyVideos(playVideo) {
         wifi.muted=true;
         myVideo.muted=true;
         btn.muted=true;
-        
         for (let i = 0; i < videos.length; i++) {
                videos[i].play();
         }
@@ -79,7 +87,7 @@ function LobbyVideos(playVideo) {
           ></video>
           <video
             className="displayVideo"
-            id="tv" preload="auto" src={tv} width="1920" height="1080" autoplay="true" loop="true" crossOrigin="anonymous" 
+            id="tv" preload="auto" src={tvVid} width="1920" height="1080" autoplay="true" loop="true" crossOrigin="anonymous" 
             playsInline=""
             webkit-playsinline=""
           ></video>

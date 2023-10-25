@@ -8,14 +8,14 @@ AFRAME.registerComponent('camera-rotation-limit', {
   
     init: function () {
       this.prevMouseX = 0;
-      this.prevRotation = 0;
+      this.prevRotation = this.degToRad(45); // Initial rotation set to -40 degrees
       this.minRotationRadians = this.degToRad(this.data.minRotation);
       this.maxRotationRadians = this.degToRad(this.data.maxRotation);
-  
+    
       this.onMouseDown = this.onMouseDown.bind(this);
       this.onMouseMove = this.onMouseMove.bind(this);
       this.onMouseUp = this.onMouseUp.bind(this);
-  
+    
       this.el.sceneEl.addEventListener('mousedown', this.onMouseDown);
     },
   
@@ -34,16 +34,18 @@ AFRAME.registerComponent('camera-rotation-limit', {
     onMouseMove: function (evt) {
       const deltaX = evt.clientX - this.prevMouseX;
       const cameraRotation = this.el.object3D.rotation.y;
-  
-      const rotation = this.prevRotation - deltaX * 0.005;
-  
+    
+      const rotationChange = deltaX * 0.005; // Adjusted the sign here
+    
+      const rotation = this.prevRotation + rotationChange;
+    
       // Limit rotation within the specified range
       this.el.object3D.rotation.y = this.clamp(
         rotation,
         this.minRotationRadians,
         this.maxRotationRadians
       );
-  
+    
       this.prevMouseX = evt.clientX;
       this.prevRotation = rotation;
     },

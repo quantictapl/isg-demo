@@ -24,6 +24,9 @@ import SubsLogic, { controlAnimation } from "./SmartMerchantComps/SubsLogic";
 import videoContainer from "../SmartMerchantAssets/videocontainer.glb"
 import esy from "../SmartMerchantAssets/Esy.glb"
 import tvImg from "../SmartMerchantAssets/tvBorder.png"
+import * as THREE from "three";
+import "./CameraIntitalRotation";
+import "./CameraMovement";
 const videoSources = [
   merchantTv,
   benifits,
@@ -49,6 +52,7 @@ function SmartMerchant({ store }) {
   const [videoEnded, setVideoEnded] = useState(false);
   const [isTVVideoEnded, setIsTVVideoEnded] = useState(false);
   const [benfitsEnded,setBenfitsEnded]=useState(false);
+  localStorage.setItem('lastVisitedPage', "/smartmerchant");
   const handleVideoEnd = () => {
     setVideoEnded(true);
      if (videoRef.current && videoRef.current.currentTime >=94) {
@@ -262,37 +266,51 @@ function SmartMerchant({ store }) {
     return () => window.removeEventListener("wheel", handleZoom);
   });
   
+  // useEffect(() => {
+  //   const rotationSpeed = 0.0001; // Adjust the rotation speed as needed
+  //   const rotationDuration = 6000; // Adjust the rotation duration (in milliseconds) as needed
+
+  //   const startTime = Date.now();
+  //   const endTime = startTime + rotationDuration;
+
+  //   const rotateCamera = () => {
+  //     const currentTime = Date.now();
+  //     const elapsed = currentTime - startTime;
+
+  //     if (elapsed >= rotationDuration) {
+  //       // Stop the rotation animation
+  //       clearInterval(animationId);
+  //       setCameraRotationEnded(true); // Set cameraRotationEnded state to true
+  //     } else {
+  //       const progress = elapsed / rotationDuration;
+  //       const rotationAngle = progress * 1.9 * Math.PI;
+
+  //       if (cameraRotationRef.current) {
+  //         cameraRotationRef.current.object3D.rotation.y = rotationAngle;
+  //       }
+  //     }
+  //   };
+
+  //   // Start the rotation animation
+  //   const animationId = setInterval(rotateCamera, 10);
+
+  //   // Clean up the animation when the component unmounts
+  //   return () => {
+  //     clearInterval(animationId);
+  //   };
+  // }, []);
   useEffect(() => {
-    const rotationSpeed = 0.0001; // Adjust the rotation speed as needed
-    const rotationDuration = 6000; // Adjust the rotation duration (in milliseconds) as needed
-
-    const startTime = Date.now();
-    const endTime = startTime + rotationDuration;
-
-    const rotateCamera = () => {
-      const currentTime = Date.now();
-      const elapsed = currentTime - startTime;
-
-      if (elapsed >= rotationDuration) {
-        // Stop the rotation animation
-        clearInterval(animationId);
-        setCameraRotationEnded(true); // Set cameraRotationEnded state to true
-      } else {
-        const progress = elapsed / rotationDuration;
-        const rotationAngle = progress * 2 * Math.PI;
-
-        if (cameraRotationRef.current) {
-          cameraRotationRef.current.object3D.rotation.y = rotationAngle;
-        }
-      }
+    const handleCameraRotationEnd = () => {
+      // When the custom event "cameraRotationEnd" is triggered, set the state to true
+      setCameraRotationEnded(true);
     };
 
-    // Start the rotation animation
-    const animationId = setInterval(rotateCamera, 10);
+    // Add the event listener
+    document.addEventListener('cameraRotationEnd', handleCameraRotationEnd);
 
-    // Clean up the animation when the component unmounts
+    // Clean up the event listener when the component unmounts
     return () => {
-      clearInterval(animationId);
+      document.removeEventListener('cameraRotationEnd', handleCameraRotationEnd);
     };
   }, []);
   console.log(cameraRotationEnded)
@@ -357,11 +375,12 @@ function SmartMerchant({ store }) {
     const tvvideo = document.getElementById("tvvideo");
     tvvideo.src = videoSource;
   };
+  
 
   return (
     <div className="scene-container">
       {/* <button className="demo-play-btn" onClick={handlePlayBtnClick}>Play</button> */}
-      
+      <HideVRButton />
       <SubsLogic  isPlaying={isPlaying} tvVideoVisible={tvVideoVisible} onPlayPauseClick={handlePlayPauseClick}
         onSkipClick={handleSkipClick} onNextVideoClick={handleNextVideo} videoEnded={videoEnded} cameraRotationEnded={cameraRotationEnded}  onTVVideoEnd={handleTVVideoEnd}
         onTVVideoPlay={handleTVVideoPlay} onTVvideoShouldPlay={handleTvVideoShouldPlay}
@@ -385,16 +404,34 @@ function SmartMerchant({ store }) {
         embedded={true}
       >
       <a-entity id="camera-rig" position="0 0 0" ref={cameraRotationRef}>
-      <Entity
+      <a-entity
+      //for a-entity
+          camera={`userHeight:1.6; active:true; zoom:${zoom};`}
+          id="camera"
           wasd-controls-enabled="false"
-          primitive="a-camera"
           ref={cameraRef}
           position="0 0 0"
+          rotation="0 -20 0"
           zoom={zoom}
           near="0.05"
           far="10000"
-          camera="active:true"
-          look-controls="reverseMouseDrag:true"
+          camera-initial-rotation
+          // camera-movement="initialRotation: 0 -40 0; reverseRotation: true"
+          // look-controls="reverseMouseDrag:true"
+    
+//For Entity
+          // id="camera"
+          //    // camera={`active: ${isRotated ? 'true' : 'false'}`}
+          //    wasd-controls-enabled="false"
+          //    primitive="a-camera"
+          //    ref={cameraRef}
+          //    position="0 0 0"
+          //    zoom={zoom}
+          //    near="0.5"
+          //    far="10000"
+          //    camera="active:true"
+          //    look-controls="reverseMouseDrag:true"
+
         >
           <a-entity
             cursor="fuse: false;"
@@ -409,7 +446,7 @@ function SmartMerchant({ store }) {
             raycaster="objects: [gui-interactable]; near:1 far:20;"
             // onClick={handleMerchantClick}
           ></a-entity>
-        </Entity>
+        </a-entity>
       </a-entity>
         
         <a-assets>
@@ -437,9 +474,9 @@ function SmartMerchant({ store }) {
     //   rotation="0 -38 0"
     //   scale="1.3 1.3 1.3"
     // ></a-entity>
-    <a-entity material="shader: flat;  src:#tvvideo;  transparent: true" geometry="primitive: plane; width: 5.45; height: 2.96" position="9.95 0 -12" rotation="0 -42.004 0" scale="2.6 2.6 2.6"></a-entity>
+    <a-entity id="tv-video" material="shader: flat;  src:#tvvideo;  transparent: true" geometry="primitive: plane; width: 5.45; height: 2.96" position="-0.156 0.091 -15.521" rotation="0 -1.449 0" scale="2.6 2.6 2.6"></a-entity>
   )}
-  <a-entity material="shader: flat;  alphaTest:0.5;  src:#tv-border; transparent: true;" geometry="primitive: plane; width: 4; height: 2.05" position="8.85 0.1 -10.53467" rotation="3.5 -41 0" scale="7.5 7.5 7.5"></a-entity>
+  <a-entity id="tv-border" material="shader: flat;  alphaTest:0.5;  src:#tv-border; transparent: true;" geometry="primitive: plane; width: 4; height: 2.05" position="-0.036 0.100 -13.814" rotation="3.500 -1.362 0.000" scale="7.5 7.5 7.5"></a-entity>
         
         {/* <a-entity sound="src:#isyintro" autoplay="true" volume="2"></a-entity> */}
         {/* <a-sound src={isyintro} autoplay="true"></a-sound> */}
@@ -453,7 +490,7 @@ function SmartMerchant({ store }) {
           shadow="cast:true;"
           animation-mixer="clip:Animation;loop:repeat;repetitions:Infinity;"
         /> */}
-        <Entity primitive="a-sky" src={smartmerchant} rotation="0 -130 0" />
+        <Entity primitive="a-sky" src={smartmerchant} rotation="0 -90 0" />
         <a-sky color="#ECECEC" scale="3 3 3"></a-sky>
         <Entity primitive="a-sky" color="#ECECEC" scale="3 3 3" />
         {/* <a-entity id="ambient" light="type: ambient; intensity:0.2;"></a-entity> */}
@@ -461,10 +498,12 @@ function SmartMerchant({ store }) {
           id="directional"
           light="type: directional; castShadow:true; intensity:1;  position:0 20 0; color:#FFFFFF"
         ></a-entity>
-        <a-entity id="spot1" light="type: spot; castShadow: true; intensity: 0.25; distance: 15; color: white; angle: 60.16" position="6.26958 3.91449 64.86643" rotation="49.99973494988642 -156.67244428954794 20.000237754631645"></a-entity>
-        <a-entity light="color: #ffffff; decay: 0; distance: 15.8; intensity: 0.4; type: spot" id="spot-light" position="-2.52809 0.72938 2"></a-entity>
-        <a-entity id="spot2" light="type: spot; castShadow: true; intensity: 0.38; decay: 0; distance: 15; color: white; angle: 60.16" position="-3.47559 2.02332 -3.3246"></a-entity>
-        <a-entity id="spot3" light="type: spot; castShadow: true; intensity: 0.34; decay: 0; distance: 15; color: white; angle: 60.16" position="3.47559 2.02332 -6.3246"></a-entity>
+       <a-entity id="spot1" light="type: spot; castShadow: true; intensity: 0.8; distance: 200; color: white; penumbra: 1; angle: 50" position="33.933 -8.73 2.177" rotation="6.428000000000001 68.011 -62.419" scale="0.2 0.2 0.2"></a-entity>
+        
+        <a-entity id="spot2" light="type: spot; castShadow: true; intensity: 0.5; distance: 200; color: white; penumbra: 1; angle: 50" position="-16.72171 -0.32872 7.37116" rotation="-9.325461073549278 -40.8799657247891 7.023889610508762" scale="0.2 0.2 0.2"></a-entity>
+        
+        <a-entity id="spot3" light="type: spot; castShadow: true; intensity: 0.8; distance: 200; color: white; penumbra: 1; angle: 50" position="-21.02744 -0.52743 -39.79053" rotation="-1.5515697092142693 -135.06276808839382 43.00220139795368" scale="0.2 0.2 0.2"></a-entity>
+        <a-entity id="spot4" light="type: spot; castShadow: true; intensity: 0.8; distance: 200; color: #30499c; penumbra: 1; angle: 50; groundColor: #ffffff" position="20.43057 0 -24.38125" rotation="2.7845748843358007 115.23556358789169 44.978332833359886" scale="0.2 0.2 0.2"></a-entity>
        {/* <a-entity
           gltf-model={optimus}
           position="0.3 -0.25 -1"
@@ -474,39 +513,38 @@ function SmartMerchant({ store }) {
           animation-mixer="clip:transform_to_main_hero;loop:repeat;repetitions:Infinity;"
         /> */}
         
-        <a-entity
+        {/* <a-entity
           gltf-model={eva}
           position="4 2.9 25"
           scale="0.05 0.05 0.05"
           rotation="0 0 0"
           shadow="cast:true;"
           animation-mixer="clip:Take 001;loop:repeat;repetitions:Infinity;"
-        />
-        <a-entity
+        /> */}
+      <a-entity
           gltf-model={esy}
           id="esy"
-          position="-1 -6 -12"
+          position="-8.504 -6.002 -12.702"
           scale="0.18 0.18 0.18"
-          rotation="0 1  0"
+          rotation="0 31.419  0"
           shadow="cast:true; receive:false;"
           // animation-mixer="clip:;loop:repeat;repetitions:Infinity;"
         />
-        
+      
         
         
           
-        <a-entity gltf-model={zoozoo} position="10.07136 -2.0308 10.43587" scale="0.02487 0.02487 0.02487" rotation="" shadow="" animation-mixer="clip: mixamo.com"></a-entity>
+        {/* <a-entity gltf-model={zoozoo} position="10.07136 -2.0308 10.43587" scale="0.02487 0.02487 0.02487" rotation="" shadow="" animation-mixer="clip: mixamo.com"></a-entity> */}
         <a-entity
         //SmartMerchantDoor
           id="#smartgate"
           material="shader: flat; color:#86d6e2; side: double; transparent: true; opacity: 0.5;"
           geometry="primitive: cylinder; radius: 40; height: 23.9; open-ended: true; theta-start: 142.5; theta-length: 40"
-          position="-99.08677 -20.10092 122.78598" rotation="0 -212.78 0" scale="2.65625 2.65625 2.65625"
+          position="-2.075 -23.217 198.62669" rotation="0 -169.57430792030385 0" scale="3.148 2.948 2.948"
           onClick={handleLobbyClick}
           event-set__mouseenter="_event: mouseenter; material.opacity: 0.5"
           event-set__mouseleave="_event: mouseleave; material.opacity: 0"
         ></a-entity>
-        
 
         <a-light light="type: ambient"></a-light>
         <button className="logout" onClick={logoutHandler}>

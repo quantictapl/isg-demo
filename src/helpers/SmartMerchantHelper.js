@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import store from "../SmartMerchantAssets/Store.glb"
-import SmartMerchant from '../components/SmartMerchant';
+import SmartMerchant from '../components/SmartMerchant6';
 import isgloading from "../videos/isgloading.webm"
 import "../components/componentcss/SmartMerchant.css";
+import bg from "../green-screen.webp"
 
-function SmartMerchantHelper() {
+function SmartMerchantHelper({models,videos,images}) {
   const [loading,setLoading]=useState(true);
+  console.log("the models are",models)
+  localStorage.setItem('lastVisitedPage', window.location.href);
   useEffect(() => {
     // Simulate a delay for demonstration purposes
     const timeout = setTimeout(() => {
@@ -15,6 +17,7 @@ function SmartMerchantHelper() {
     // Clean up the timeout on component unmount
     return () => clearTimeout(timeout);
   }, []);
+  console.log("images:",images)
   if (loading) {
     return <div className='loading-container'>
       <video
@@ -34,7 +37,10 @@ function SmartMerchantHelper() {
     <div>
       
       <SmartMerchant 
-      store={store} />
+      esy={models.Model2}
+      smartmerchantBg={images.Image2}
+      // smartmerchantBg={bg}
+      videos={videos} />
     </div>
   );
 }
